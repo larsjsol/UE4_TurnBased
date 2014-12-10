@@ -18,7 +18,6 @@ class UE4_TURNBASED_API ATB_GameState : public AGameState
 public:	
 	ATB_GameState(const FObjectInitializer& ObjectInitializer);
 	
-	
 	UPROPERTY(BlueprintReadOnly, Category="Game")
 	int32 Turn;
 
@@ -31,6 +30,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Game")
 	ATeamController* GetTeamController(FName TeamName);
 
+	void BeginPlay();
 private:
 	TMap<FName, ATeamController*> TeamControllers;
+	ATeamController *AiTeamController = NULL;
 };
