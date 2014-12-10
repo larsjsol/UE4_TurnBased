@@ -5,6 +5,12 @@
 #include "TB_GameState.h"
 
 
+ATeamController::ATeamController(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer)
+{
+	TeamName = this->GetFName();
+}
+
 void ATeamController::PlayTurn_Implementation() 
 {
 	;
@@ -37,7 +43,7 @@ ACharacter* ATeamController::GetActiveCharacter_Implementation()
 	}
 }
 
-void ATeamController::AddCharacter_Implementation(ACharacter* NewCharacter)
+void ATeamController::RegisterCharacter_Implementation(ACharacter* NewCharacter)
 {
 	Characters.Push(NewCharacter);
 }

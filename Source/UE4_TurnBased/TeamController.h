@@ -14,6 +14,8 @@ class UE4_TURNBASED_API ATeamController : public AController
 	GENERATED_BODY()
 
 public:
+	ATeamController(const FObjectInitializer& ObjectInitializer);
+
 	UFUNCTION(BlueprintNativeEvent, Category = "Game")
 	void PlayTurn();
 
@@ -27,7 +29,7 @@ public:
 	ACharacter* GetActiveCharacter();
 
 	UFUNCTION(BluePrintNativeEvent, Category = "Game")
-	void AddCharacter(ACharacter* NewCharacter);
+	void RegisterCharacter(ACharacter* NewCharacter);
 
 	UPROPERTY(BlueprintReadWrite, Category = "Game")
 	TArray<ACharacter*> Characters;
@@ -35,8 +37,12 @@ public:
 	UPROPERTY(BlueprintReadWrite, Category = "Game")
 	APlayerController* PlayerController = NULL;
 
+	UPROPERTY(BlueprintReadWrite, Category = "Game")
+	FName TeamName;
+
 private:
 	UPROPERTY()
 	uint32 CurrentCharacterId = 0;
 
 };
+

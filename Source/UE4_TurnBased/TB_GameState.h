@@ -2,8 +2,10 @@
 
 #pragma once
 
+#include "TeamController.h"
 #include "GameFramework/GameState.h"
 #include "TB_GameState.generated.h"
+
 
 /**
  * 
@@ -22,6 +24,13 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category="Game")
 	void EndTurn();
-private:
 
+	UFUNCTION(BlueprintCallable, Category = "Game")
+	void RegisterTeamController(ATeamController* TeamController);
+
+	UFUNCTION(BlueprintCallable, Category = "Game")
+	ATeamController* GetTeamController(FName TeamName);
+
+private:
+	TMap<FName, ATeamController*> TeamControllers;
 };

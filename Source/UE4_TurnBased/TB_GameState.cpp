@@ -16,4 +16,20 @@ void ATB_GameState::EndTurn()
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::FromInt(Turn));
 }
 
+void ATB_GameState::RegisterTeamController(ATeamController* TeamController)
+{
+	TeamControllers.Add(TeamController->TeamName, TeamController);
+}
 
+ATeamController* ATB_GameState::GetTeamController(FName TeamName)
+{
+	ATeamController** t = TeamControllers.Find(TeamName);
+	if (t) 
+	{
+		return *t;
+	}
+	else 
+	{
+		return NULL;
+	}
+}
