@@ -17,6 +17,8 @@ class UE4_TURNBASED_API ATB_PlayerController : public APlayerController
 public:
 	ATB_PlayerController(const FObjectInitializer& ObjectInitializer);
 
-	UPROPERTY(BlueprintReadWrite, Category = "Game")
-	ATeamController *TeamController;	
+	void BeginPlay();
+
+	UPROPERTY(BlueprintReadWrite, Category = "Controller")
+	ATeamController *TeamController = NULL;	
 };

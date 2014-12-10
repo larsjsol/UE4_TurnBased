@@ -14,5 +14,5 @@ class UE4_TURNBASED_API AUE4_TurnBasedGameMode : public AGameMode
 	GENERATED_BODY()
 
 public:
-	AUE4_TurnBasedGameMode(const FObjectInitializer& ObjectInitializer);	
+	AUE4_TurnBasedGameMode(const FObjectInitializer& ObjectInitializer);
 };

@@ -9,8 +9,15 @@
 ATB_PlayerController::ATB_PlayerController(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
+
+}
+
+void ATB_PlayerController::BeginPlay() 
+{
+	APlayerController::BeginPlay();
+
 	UWorld* world = GetWorld();
-	
+
 	//initialize TeamController
 	TeamController = world->SpawnActor<ATeamController>(FActorSpawnParameters());
 
@@ -19,4 +26,3 @@ ATB_PlayerController::ATB_PlayerController(const FObjectInitializer& ObjectIniti
 	ATB_GameState* gamestate = (ATB_GameState *)world->GameState;
 	gamestate->RegisterTeamController(TeamController);
 }
-
