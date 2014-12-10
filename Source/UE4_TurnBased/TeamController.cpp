@@ -15,6 +15,11 @@ void ATeamController::PlayTurn_Implementation()
 {
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString("Starting turn for ") += TeamName.ToString());
 
+	for (auto *c : Characters)
+	{
+		c->PrepareForNextTurn();
+	}
+
 	// Just end the turn if we are not controlled by a human
 	if (!PlayerController) {
 		EndTurn_Implementation();
@@ -37,7 +42,7 @@ void ATeamController::ActivateNextCharacter_Implementation()
 	}
 }
 
-ACharacter* ATeamController::GetActiveCharacter_Implementation()
+ATB_Character* ATeamController::GetActiveCharacter_Implementation()
 {
 	if (Characters.Num()) {
 		return Characters[CurrentCharacterId];
@@ -48,7 +53,7 @@ ACharacter* ATeamController::GetActiveCharacter_Implementation()
 	}
 }
 
-void ATeamController::RegisterCharacter_Implementation(ACharacter* NewCharacter)
+void ATeamController::RegisterCharacter_Implementation(ATB_Character* NewCharacter)
 {
 	Characters.Push(NewCharacter);
 }

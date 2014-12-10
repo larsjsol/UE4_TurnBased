@@ -3,6 +3,7 @@
 #pragma once
 
 #include "GameFramework/Controller.h"
+#include "TB_Character.h"
 #include "TeamController.generated.h"
 
 /**
@@ -26,13 +27,13 @@ public:
 	void ActivateNextCharacter();
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Game")
-	ACharacter* GetActiveCharacter();
+	ATB_Character* GetActiveCharacter();
 
 	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "Game")
-	void RegisterCharacter(ACharacter* NewCharacter);
+	void RegisterCharacter(ATB_Character* NewCharacter);
 
 	UPROPERTY(BlueprintReadWrite, Category = "Game")
-	TArray<ACharacter*> Characters;
+	TArray<ATB_Character*> Characters;
 
 	UPROPERTY(BlueprintReadWrite, Category = "Game")
 	APlayerController* PlayerController = NULL;
