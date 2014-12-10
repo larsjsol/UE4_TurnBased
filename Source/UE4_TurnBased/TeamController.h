@@ -16,19 +16,19 @@ class UE4_TURNBASED_API ATeamController : public AController
 public:
 	ATeamController(const FObjectInitializer& ObjectInitializer);
 
-	UFUNCTION(BlueprintNativeEvent, Category = "Game")
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Game")
 	void PlayTurn();
 
-	UFUNCTION(BlueprintNativeEvent, Category = "Game")
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Game")
 	void EndTurn();
 
-	UFUNCTION(BlueprintNativeEvent, Category = "Game")
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Game")
 	void ActivateNextCharacter();
 
-	UFUNCTION(BlueprintNativeEvent, Category = "Game")
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Game")
 	ACharacter* GetActiveCharacter();
 
-	UFUNCTION(BluePrintNativeEvent, Category = "Game")
+	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "Game")
 	void RegisterCharacter(ACharacter* NewCharacter);
 
 	UPROPERTY(BlueprintReadWrite, Category = "Game")

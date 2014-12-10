@@ -32,6 +32,7 @@ public:
 
 	void BeginPlay();
 private:
-	TMap<FName, ATeamController*> TeamControllers;
+	TArray<ATeamController*> TeamControllers;
 	ATeamController *AiTeamController = NULL;
+	uint32 CurrentTeamId = 0;
 };

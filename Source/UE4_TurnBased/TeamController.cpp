@@ -13,7 +13,12 @@ ATeamController::ATeamController(const FObjectInitializer& ObjectInitializer)
 
 void ATeamController::PlayTurn_Implementation() 
 {
-	;
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString("Starting turn for ") += TeamName.ToString());
+
+	// Just end the turn if we are not controlled by a human
+	if (!PlayerController) {
+		EndTurn_Implementation();
+	}
 }
 
 void ATeamController::EndTurn_Implementation()

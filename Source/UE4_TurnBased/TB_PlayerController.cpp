@@ -25,4 +25,6 @@ void ATB_PlayerController::BeginPlay()
 	TeamController->TeamName = FName(TEXT("Team Human"));
 	ATB_GameState* gamestate = (ATB_GameState *)world->GameState;
 	gamestate->RegisterTeamController(TeamController);
+
+	TeamController->PlayerController = this;
 }
