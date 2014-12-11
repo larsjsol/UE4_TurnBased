@@ -2,4 +2,4 @@
 
 #include "UE4_TurnBased.h"
 
-IMPLEMENT_PRIMARY_GAME_MODULE( FDefaultGameModuleImpl, UE4_TurnBased, "UE4_TurnBased" );
+IMPLEMENT_GAME_MODULE( FDefaultGameModuleImpl, UE4_TurnBased );
