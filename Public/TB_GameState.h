@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "TeamController.h"
+#include "TB_TeamController.h"
 #include "GameFramework/GameState.h"
 #include "TB_GameState.generated.h"
 
@@ -25,14 +25,14 @@ public:
 	void EndTurn();
 
 	UFUNCTION(BlueprintCallable, Category = "Game")
-	void RegisterTeamController(ATeamController* TeamController);
+	void RegisterTB_TeamController(ATB_TeamController* TB_TeamController);
 
 	UFUNCTION(BlueprintCallable, Category = "Game")
-	ATeamController* GetTeamController(FName TeamName);
+	ATB_TeamController* GetTB_TeamController(FName TeamName);
 
 	void BeginPlay();
 private:
-	TArray<ATeamController*> TeamControllers;
-	ATeamController *AiTeamController = NULL;
+	TArray<ATB_TeamController*> TB_TeamControllers;
+	ATB_TeamController *AiTB_TeamController = NULL;
 	uint32 CurrentTeamId = 0;
 };

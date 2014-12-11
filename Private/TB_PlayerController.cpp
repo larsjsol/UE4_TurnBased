@@ -18,13 +18,13 @@ void ATB_PlayerController::BeginPlay()
 
 	UWorld* world = GetWorld();
 
-	//initialize TeamController
-	TeamController = world->SpawnActor<ATeamController>(FActorSpawnParameters());
+	//initialize TB_TeamController
+	TB_TeamController = world->SpawnActor<ATB_TeamController>(FActorSpawnParameters());
 
 	//set team name and register our teamcontroller with the gamestate
-	TeamController->TeamName = FName(TEXT("Team Human"));
+	TB_TeamController->TeamName = FName(TEXT("Team Human"));
 	ATB_GameState* gamestate = (ATB_GameState *)world->GameState;
-	gamestate->RegisterTeamController(TeamController);
+	gamestate->RegisterTB_TeamController(TB_TeamController);
 
-	TeamController->PlayerController = this;
+	TB_TeamController->PlayerController = this;
 }

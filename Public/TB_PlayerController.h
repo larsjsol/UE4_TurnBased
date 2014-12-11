@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "TeamController.h"
+#include "TB_TeamController.h"
 #include "GameFramework/PlayerController.h"
 #include "TB_PlayerController.generated.h"
 
@@ -20,5 +20,5 @@ public:
 	void BeginPlay();
 
 	UPROPERTY(BlueprintReadWrite, Category = "Controller")
-	ATeamController *TeamController = NULL;	
+	ATB_TeamController *TB_TeamController = NULL;	
 };
