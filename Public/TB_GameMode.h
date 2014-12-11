@@ -3,16 +3,16 @@
 #pragma once
 
 #include "GameFramework/GameMode.h"
-#include "UE4_TurnBasedGameMode.generated.h"
+#include "TB_GameMode.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class UE4_TURNBASED_API AUE4_TurnBasedGameMode : public AGameMode
+class UE4_TURNBASED_API ATB_GameMode : public AGameMode
 {
 	GENERATED_BODY()
 
 public:
-	AUE4_TurnBasedGameMode(const FObjectInitializer& ObjectInitializer);
+	ATB_GameMode(const FObjectInitializer& ObjectInitializer);
 };

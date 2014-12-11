@@ -2,11 +2,11 @@
 
 #include "UE4_TurnBased.h"
 #include "TB_PlayerController.h"
-#include "UE4_TurnBasedGameMode.h"
+#include "TB_GameMode.h"
 
 
 
-AUE4_TurnBasedGameMode::AUE4_TurnBasedGameMode(const FObjectInitializer& ObjectInitializer)
+ATB_GameMode::ATB_GameMode(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer) 
 {
 	PlayerControllerClass = ATB_PlayerController::StaticClass();
