@@ -25,6 +25,8 @@ Module=UE4_TurnBased
                         "LoadingPhase": "Default"
                 }
 ```
-  * Right click on `<YourProject>.uproject` and select `Generate Visual Studio project files`
------------
+
+ * Right click on `<YourProject>.uproject` and select `Generate Visual Studio project files`
+
+
 Documentation for modules: https://docs.unrealengine.com/latest/INT/Programming/Modules/Gameplay/index.html
