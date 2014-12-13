@@ -25,14 +25,14 @@ public:
 	void EndTurn();
 
 	UFUNCTION(BlueprintCallable, Category = "Game")
-	void RegisterTB_TeamController(ATB_TeamController* TB_TeamController);
+	void RegisterTeamController(ATB_TeamController* TB_TeamController);
 
 	UFUNCTION(BlueprintCallable, Category = "Game")
-	ATB_TeamController* GetTB_TeamController(FName TeamName);
+	ATB_TeamController* GetTeamController(FName TeamName);
 
 	void BeginPlay();
 private:
-	TArray<ATB_TeamController*> TB_TeamControllers;
-	ATB_TeamController *AiTB_TeamController = NULL;
+	TArray<ATB_TeamController*> TeamControllers;
+	ATB_TeamController *AiTeamController = NULL;
 	uint32 CurrentTeamId = 0;
 };

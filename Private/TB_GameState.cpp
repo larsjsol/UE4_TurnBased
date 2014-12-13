@@ -14,23 +14,23 @@ ATB_GameState::ATB_GameState(const FObjectInitializer& ObjectInitializer)
 void ATB_GameState::EndTurn()
 {
 	CurrentTeamId++;
-	if (CurrentTeamId >= (uint32)TB_TeamControllers.Num())
+	if (CurrentTeamId >= (uint32)TeamControllers.Num())
 	{
 		CurrentTeamId = 0;
 		Turn += 1;
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString("Starting turn ") += FString::FromInt(Turn));
 	}
-	TB_TeamControllers[CurrentTeamId]->PlayTurn();
+	TeamControllers[CurrentTeamId]->PlayTurn();
 }
 
-void ATB_GameState::RegisterTB_TeamController(ATB_TeamController* TB_TeamController)
+void ATB_GameState::RegisterTeamController(ATB_TeamController* TeamController)
 {
-	TB_TeamControllers.Add(TB_TeamController);
+	TeamControllers.Add(TeamController);
 }
 
-ATB_TeamController* ATB_GameState::GetTB_TeamController(FName TeamName)
+ATB_TeamController* ATB_GameState::GetTeamController(FName TeamName)
 {
-	for (auto *tc : TB_TeamControllers)
+	for (auto *tc : TeamControllers)
 	{
 		if (tc->TeamName == TeamName)
 		{
@@ -51,8 +51,8 @@ void ATB_GameState::BeginPlay()
 
 	//make sure that there are at least one enemy team
 	controller->TeamName = FName(TEXT("Team AI"));
-	RegisterTB_TeamController(controller);
+	RegisterTeamController(controller);
 
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString("Starting turn ") += FString::FromInt(Turn));
-	TB_TeamControllers[CurrentTeamId]->PlayTurn();
+	TeamControllers[CurrentTeamId]->PlayTurn();
 }
