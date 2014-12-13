@@ -17,15 +17,15 @@ public:
 
 	/* Action Points */
 	UPROPERTY(BlueprintReadWrite, Category = "Game Rules")
-	uint32 ActionPoints = 2;
+	int32 ActionPoints = 2;
 	UPROPERTY(BlueprintReadWrite, Category = "Game Rules")
-	uint32 MaxActionPoints = 2;
+	int32 MaxActionPoints = 2;
 
 	/* Hit Points */
 	UPROPERTY(BlueprintReadWrite, Category = "Game Rules")
-	uint32 HitPoints = 10;
+	int32 HitPoints = 10;
 	UPROPERTY(BlueprintReadWrite, Category = "Game Rules")
-	uint32 MaxHitPoints = 10;
+	int32 MaxHitPoints = 10;
 
 	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "Game Rules")
 	void PrepareForNextTurn();
