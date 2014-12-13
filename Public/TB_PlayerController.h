@@ -3,6 +3,7 @@
 #pragma once
 
 #include "TB_TeamController.h"
+#include "TB_GameState.h"
 #include "GameFramework/PlayerController.h"
 #include "TB_PlayerController.generated.h"
 
@@ -20,5 +21,19 @@ public:
 	void BeginPlay();
 
 	UPROPERTY(BlueprintReadWrite, Category = "Controller")
-	ATB_TeamController *TB_TeamController = NULL;	
+	ATB_TeamController *TeamController = NULL;
+
+	/* User actions */
+	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "User Actions")
+	void EndTurn();
+
+	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "User Actions")
+	void SelectNextCharacter();
+
+	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "User Actions")
+	void MoveCharacterTo(FVector Destination);
+
+private:
+	UPROPERTY()
+	ATB_GameState *GameState = NULL;
 };

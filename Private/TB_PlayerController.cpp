@@ -28,3 +28,21 @@ void ATB_PlayerController::BeginPlay()
 
 	TeamController->PlayerController = this;
 }
+
+
+/* User actions */
+
+void ATB_PlayerController::EndTurn_Implementation()
+{
+	GameState->EndTurn();
+}
+
+void ATB_PlayerController::SelectNextCharacter_Implementation()
+{
+	TeamController->ActivateNextLivingCharacter();
+}
+
+void ATB_PlayerController::MoveCharacterTo_Implementation(FVector Destination)
+{
+	;
+}
