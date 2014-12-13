@@ -2,7 +2,32 @@
 
 #include "UE4_TurnBased.h"
 #include "TB_Character.h"
+#include "TB_GameState.h"
 
+#include "AIController.h"
+
+ATB_Character::ATB_Character(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer)
+{
+	AIControllerClass = AAIController::StaticClass();
+}
+
+void ATB_Character::BeginPlay()
+{
+	ACharacter::BeginPlay();
+
+	auto *World = GetWorld();
+	auto *GameState = (ATB_GameState*) World->GetGameState();
+	auto *TeamController = GameState->GetTeamController(TeamName);
+	if (TeamController)
+	{
+		TeamController->RegisterCharacter(this);
+	}
+	else 
+	{
+		UE_LOG(TB_Log, Warning, TEXT("%s is part of team %s, but no such team exist"), *Name.ToString(), *TeamName.ToString());
+	}
+}
 
 void ATB_Character::PrepareForNextTurn_Implementation()
 {
@@ -25,3 +50,24 @@ void ATB_Character::ClearBusy_Implementation()
 	Busy = false;
 }
 
+bool ATB_Character::CanMoveTo_Implementation(FVector Destination)
+{
+	auto *World = GetWorld();
+	auto *NavigationSystem = World->GetNavigationSystem();
+
+	float PathLength;
+	if (NavigationSystem->GetPathLength(GetActorLocation(), Destination, PathLength) == ENavigationQueryResult::Type::Success)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, 
+			FString("Distance from ") += GetActorLocation().ToString() += FString(" to ") += Destination.ToString() += FString(": ") += FString::SanitizeFloat(PathLength));
+		return PathLength <= Movement;
+	}
+	return false;
+}
+
+void ATB_Character::MoveTo_Implementation(FVector Destination)
+{
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString("Moving to ") += Destination.ToString());
+	auto *aic = (AAIController*) Controller;
+	aic->MoveToLocation(Destination, 0.05, false);
+}

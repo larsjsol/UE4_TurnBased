@@ -3,3 +3,6 @@
 #include "UE4_TurnBased.h"
 
 IMPLEMENT_GAME_MODULE( FDefaultGameModuleImpl, UE4_TurnBased );
+
+//General Log
+DEFINE_LOG_CATEGORY(TB_Log);

@@ -15,6 +15,8 @@ class UE4_TURNBASED_API ATB_Character : public ACharacter
 public:
 	ATB_Character(const FObjectInitializer& ObjectInitializer);
 
+	void BeginPlay();
+
 	/* Action Points */
 	UPROPERTY(BlueprintReadWrite, Category = "Game Rules")
 	int32 ActionPoints = 2;
@@ -26,6 +28,15 @@ public:
 	int32 HitPoints = 10;
 	UPROPERTY(BlueprintReadWrite, Category = "Game Rules")
 	int32 MaxHitPoints = 10;
+
+	UPROPERTY(BlueprintReadWrite, Category = "Game Rules")
+	float Movement = 1000; //10m
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Flavour")
+	FName Name;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Flavour")
+	FName TeamName;
 
 	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "Game Rules")
 	void PrepareForNextTurn();
@@ -40,6 +51,12 @@ public:
 	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "Game")
 	void ClearBusy();
 
+	/* Navigation */
+	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "Navigation")
+	bool CanMoveTo(FVector Destination);
+
+	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "Navigation")
+	void MoveTo(FVector Destination);
 
 private:
 	bool Busy = false;

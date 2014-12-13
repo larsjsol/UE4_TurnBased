@@ -29,7 +29,20 @@ void ATB_PlayerController::BeginPlay()
 	TeamController->PlayerController = this;
 }
 
-
+bool ATB_PlayerController::LineTraceFromScreenPos(float ScreenX, float ScreenY, FHitResult& WorldHit)
+{
+	FVector Location;
+	FVector Direction;
+	if (DeprojectScreenPositionToWorld(ScreenX, ScreenY, Location, Direction)) {
+		float LineLength = 100000; // guess of what is not to long and not to short...
+		if (GetWorld()->LineTraceSingle(WorldHit, Location, Direction * LineLength, ECC_Visibility,
+			FCollisionQueryParams(), FCollisionResponseParams()))
+		{
+			return true;
+		}
+	}
+	return false;
+}
 /* User actions */
 
 void ATB_PlayerController::EndTurn_Implementation()
@@ -44,5 +57,9 @@ void ATB_PlayerController::SelectNextCharacter_Implementation()
 
 void ATB_PlayerController::MoveCharacterTo_Implementation(FVector Destination)
 {
-	;
+	auto *Character = TeamController->GetActiveCharacter();
+	if (Character)
+	{
+		Character->MoveTo(Destination);
+	}
 }

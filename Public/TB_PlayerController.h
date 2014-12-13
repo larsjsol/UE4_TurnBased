@@ -23,6 +23,9 @@ public:
 	UPROPERTY(BlueprintReadWrite, Category = "Controller")
 	ATB_TeamController *TeamController = NULL;
 
+	UFUNCTION(BlueprintCallable, Category = "Utilities")
+	bool LineTraceFromScreenPos(float ScreenX, float ScreenY, FHitResult& WorldHit);
+
 	/* User actions */
 	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "User Actions")
 	void EndTurn();

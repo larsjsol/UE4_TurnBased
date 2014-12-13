@@ -4,3 +4,6 @@
 
 #include "Engine.h"
 #include "UE4_TurnBasedClasses.h"
+
+//General Log
+DECLARE_LOG_CATEGORY_EXTERN(TB_Log, Log, All);
