@@ -23,16 +23,27 @@ public:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Game")
 	void EndTurn();
 
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Game")
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Team Members")
 	void ActivateNextCharacter();
 
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Game")
+	/* Select the next living character, no effect if everyone is dead */
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Team Members")
+	void ActivateNextLivingCharacter();
+
+	/* 
+	Select the next living character with remaining APs, 
+	no effect if no chars fit match criteria
+	*/
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Team Members")
+	void ActivateNextCharacterThatCanAct();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Team Members")
 	ATB_Character* GetActiveCharacter();
 
-	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "Game")
+	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "Team Members")
 	void RegisterCharacter(ATB_Character* NewCharacter);
 
-	UPROPERTY(BlueprintReadWrite, Category = "Game")
+	UPROPERTY(BlueprintReadWrite, Category = "Team Members")
 	TArray<ATB_Character*> Characters;
 
 	UPROPERTY(BlueprintReadWrite, Category = "Game")

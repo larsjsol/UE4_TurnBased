@@ -35,10 +35,35 @@ void ATB_TeamController::EndTurn_Implementation()
 
 void ATB_TeamController::ActivateNextCharacter_Implementation()
 {
-	CurrentCharacterId += 1;
-	if (CurrentCharacterId >= (uint32) Characters.Num()) 
+	CurrentCharacterId = (CurrentCharacterId + 1) % Characters.Num();
+}
+
+void ATB_TeamController::ActivateNextLivingCharacter_Implementation()
+{
+	auto previd = CurrentCharacterId;
+	ActivateNextCharacter();
+	while (CurrentCharacterId != previd)
 	{
-		CurrentCharacterId = 0;
+		if (Characters[CurrentCharacterId]->HitPoints > 0)
+		{
+			break;
+		}
+		ActivateNextCharacter();
+	}
+}
+
+void ATB_TeamController::ActivateNextCharacterThatCanAct_Implementation()
+{
+	auto previd = CurrentCharacterId;
+	ActivateNextCharacter();
+	while (CurrentCharacterId != previd)
+	{
+		if (Characters[CurrentCharacterId]->HitPoints > 0 && 
+			Characters[CurrentCharacterId]->ActionPoints > 0)
+		{
+			break;
+		}
+		ActivateNextCharacter();
 	}
 }
 

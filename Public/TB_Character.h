@@ -13,11 +13,20 @@ class UE4_TURNBASED_API ATB_Character : public ACharacter
 {
 	GENERATED_BODY()
 public:
+	ATB_Character(const FObjectInitializer& ObjectInitializer);
+
+	/* Action Points */
 	UPROPERTY(BlueprintReadWrite, Category = "Game Rules")
 	uint32 ActionPoints = 2;
 	UPROPERTY(BlueprintReadWrite, Category = "Game Rules")
 	uint32 MaxActionPoints = 2;
-	
+
+	/* Hit Points */
+	UPROPERTY(BlueprintReadWrite, Category = "Game Rules")
+	uint32 HitPoints = 10;
+	UPROPERTY(BlueprintReadWrite, Category = "Game Rules")
+	uint32 MaxHitPoints = 10;
+
 	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "Game Rules")
 	void PrepareForNextTurn();
 
