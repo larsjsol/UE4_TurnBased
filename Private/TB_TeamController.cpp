@@ -35,8 +35,11 @@ void ATB_TeamController::EndTurn_Implementation()
 
 void ATB_TeamController::ActivateNextCharacter_Implementation()
 {
-	CurrentCharacterId = (CurrentCharacterId + 1) % Characters.Num();
-}
+	if (Characters.Num() > 0)
+	{
+		CurrentCharacterId = (CurrentCharacterId + 1) % Characters.Num();
+	}
+}	
 
 void ATB_TeamController::ActivateNextLivingCharacter_Implementation()
 {
