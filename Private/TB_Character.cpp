@@ -11,12 +11,17 @@ ATB_Character::ATB_Character(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
 	AIControllerClass = AAIController::StaticClass();
-	Name = this->GetFName();
 }
 
 void ATB_Character::BeginPlay()
 {
 	ACharacter::BeginPlay();
+
+	/* Use the actor name if no other is given */
+	if (Name.IsNone())
+	{
+		Name = this->GetFName();
+	}
 
 	auto *World = GetWorld();
 	auto *GameState = (ATB_GameState*) World->GetGameState();
