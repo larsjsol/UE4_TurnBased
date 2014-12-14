@@ -43,7 +43,8 @@ void ATB_Character::PrepareForThisTurn_Implementation()
 
 bool ATB_Character::IsBusy_Implementation()
 {
-	return Busy;
+	auto Vel = GetVelocity();
+	return Busy || Vel.Size() > 0;
 }
 
 void ATB_Character::SetBusy_Implementation(float BusyDuration)
@@ -71,7 +72,12 @@ bool ATB_Character::CanMoveTo_Implementation(FVector Destination)
 
 void ATB_Character::MoveTo_Implementation(FVector Destination)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString("Moving to ") += Destination.ToString());
+	if (ActionPoints <= 0)
+	{
+		return;
+	}
+	ActionPoints--;
+
 	auto *aic = (AAIController*) Controller;
 	aic->MoveToLocation(Destination, 0.05, false);
 }

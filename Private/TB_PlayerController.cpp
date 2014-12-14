@@ -47,12 +47,12 @@ bool ATB_PlayerController::LineTraceFromScreenPos(float ScreenX, float ScreenY, 
 
 void ATB_PlayerController::EndTurn_Implementation()
 {
-	GameState->EndTurn();
+	TeamController->EndTurn();
 }
 
 void ATB_PlayerController::SelectNextCharacter_Implementation()
 {
-	TeamController->ActivateNextLivingCharacter();
+	TeamController->ActivateNextCharacterThatCanAct();
 }
 
 void ATB_PlayerController::MoveCharacterTo_Implementation(FVector Destination)
