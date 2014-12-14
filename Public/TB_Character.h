@@ -41,6 +41,9 @@ public:
 	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "Game Rules")
 	void PrepareForNextTurn();
 
+	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "Game Rules")
+	void PrepareForThisTurn();
+
 	/* Is character performing an action right now? */
 	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "Game")
 	bool IsBusy();

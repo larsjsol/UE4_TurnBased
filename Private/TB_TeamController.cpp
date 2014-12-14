@@ -17,7 +17,7 @@ void ATB_TeamController::PlayTurn_Implementation()
 
 	for (auto *c : Characters)
 	{
-		c->PrepareForNextTurn();
+		c->PrepareForThisTurn();
 	}
 
 	// Just end the turn if we are not controlled by a human
@@ -28,6 +28,11 @@ void ATB_TeamController::PlayTurn_Implementation()
 
 void ATB_TeamController::EndTurn_Implementation()
 {
+	for (auto *c : Characters)
+	{
+		c->PrepareForNextTurn();
+	}
+
 	UWorld* world = GetWorld();
 	ATB_GameState* gamestate = (ATB_GameState *) world->GameState;
 	gamestate->EndTurn();

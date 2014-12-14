@@ -35,6 +35,11 @@ void ATB_Character::PrepareForNextTurn_Implementation()
 	ActionPoints = MaxActionPoints;
 }
 
+void ATB_Character::PrepareForThisTurn_Implementation()
+{
+	;
+}
+
 bool ATB_Character::IsBusy_Implementation()
 {
 	return Busy;
