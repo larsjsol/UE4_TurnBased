@@ -11,6 +11,7 @@ ATB_Character::ATB_Character(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
 	AIControllerClass = AAIController::StaticClass();
+	Name = this->GetFName();
 }
 
 void ATB_Character::BeginPlay()
