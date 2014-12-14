@@ -18,7 +18,6 @@ void ATB_GameState::EndTurn()
 	{
 		CurrentTeamId = 0;
 		Turn += 1;
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString("Starting turn ") += FString::FromInt(Turn));
 	}
 	TeamControllers[CurrentTeamId]->PlayTurn();
 }
@@ -49,11 +48,14 @@ void ATB_GameState::BeginPlay()
 	//initialize TB_TeamController
 	ATB_TeamController *controller = world->SpawnActor<ATB_TeamController>(FActorSpawnParameters());
 
+	//initialize TB_GameLog
+	GameLog = world->SpawnActor<ATB_GameLog>(FActorSpawnParameters());
+
 	//make sure that there are at least one enemy team
 	controller->TeamName = FName(TEXT("Team AI"));
 	RegisterTeamController(controller);
 
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString("Starting turn ") += FString::FromInt(Turn));
+	GameLog->Log(ETB_LogCategory::VE_TurnClock, "Starting game");
 	TeamControllers[CurrentTeamId]->PlayTurn();
 }
 

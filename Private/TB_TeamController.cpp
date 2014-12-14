@@ -38,7 +38,9 @@ void ATB_TeamController::BeginPlay()
 
 void ATB_TeamController::PlayTurn_Implementation() 
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString("Starting turn for ") += TeamName.ToString());
+	UWorld* world = GetWorld();
+	ATB_GameState* GameState = (ATB_GameState *)world->GameState;
+	GameState->GameLog->Log(ETB_LogCategory::VE_TurnClock, FString::Printf(TEXT("Starting turn %d for %s"), GameState->Turn, *TeamName.ToString()));
 
 	for (auto *c : Characters)
 	{

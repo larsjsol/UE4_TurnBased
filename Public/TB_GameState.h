@@ -3,6 +3,8 @@
 #pragma once
 
 #include "TB_TeamController.h"
+#include "TB_GameLog.h"
+
 #include "GameFramework/GameState.h"
 #include "TB_GameState.generated.h"
 
@@ -32,6 +34,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Teams")
 	const TArray<ATB_TeamController *>& GetTeamControllers();
+
+	UPROPERTY(BlueprintReadWrite, Category = "Log")
+	ATB_GameLog *GameLog;
 
 	void BeginPlay();
 private:
