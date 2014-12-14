@@ -36,7 +36,7 @@ public:
 	FName Name;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Flavour")
-	FName TeamName;
+	FName TeamName = "Team AI";
 
 	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "Game Rules")
 	void PrepareForNextTurn();

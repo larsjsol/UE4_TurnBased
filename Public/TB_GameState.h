@@ -21,14 +21,17 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category="Game")
 	int32 Turn;
 
-	UFUNCTION(BlueprintCallable, Category="Game")
+	UFUNCTION(BlueprintCallable, Category="Teams")
 	void EndTurn();
 
-	UFUNCTION(BlueprintCallable, Category = "Game")
+	UFUNCTION(BlueprintCallable, Category = "Teams")
 	void RegisterTeamController(ATB_TeamController* TB_TeamController);
 
-	UFUNCTION(BlueprintCallable, Category = "Game")
+	UFUNCTION(BlueprintCallable, Category = "Teams")
 	ATB_TeamController* GetTeamController(FName TeamName);
+
+	UFUNCTION(BlueprintCallable, Category = "Teams")
+	const TArray<ATB_TeamController *>& GetTeamControllers();
 
 	void BeginPlay();
 private:

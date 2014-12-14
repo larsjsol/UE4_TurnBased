@@ -11,6 +11,31 @@ ATB_TeamController::ATB_TeamController(const FObjectInitializer& ObjectInitializ
 	TeamName = this->GetFName();
 }
 
+void ATB_TeamController::BeginPlay()
+{
+	/* 
+	In the future we will add enemies to KnownEnemies when we see them for the first time
+	Just add everyone for now...
+	*/
+	auto *World = GetWorld();
+	auto *GameState = (ATB_GameState *)World->GameState;
+	auto TeamControllers = GameState->GetTeamControllers();
+
+	for (auto *tc : TeamControllers) 
+	{
+		if (tc->TeamName != TeamName)
+		{
+			for (auto *c : tc->Characters)
+			{
+				if (c->HitPoints > 0)
+				{
+					KnownEnemies.Add(c);
+				}
+			}
+		}
+	}
+}
+
 void ATB_TeamController::PlayTurn_Implementation() 
 {
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString("Starting turn for ") += TeamName.ToString());
@@ -89,4 +114,28 @@ ATB_Character* ATB_TeamController::GetActiveCharacter_Implementation()
 void ATB_TeamController::RegisterCharacter_Implementation(ATB_Character* NewCharacter)
 {
 	Characters.Push(NewCharacter);
+}
+
+void ATB_TeamController::RegisterEnemy_Implementation(ATB_Character* Enemy)
+{
+	KnownEnemies.AddUnique(Enemy);
+}
+
+void ATB_TeamController::GetKnownEnemies_Implementation(TArray<ATB_Character*>& Enemies)
+{
+	//remove anyone that have died since the last time
+	TArray<ATB_Character *> Dead;
+	for (auto *c : KnownEnemies)
+	{
+		if (c->HitPoints <= 0)
+		{
+			Dead.Add(c);
+		}
+	}
+	for (auto *c : Dead)
+	{
+		KnownEnemies.Remove(c);
+	}
+
+	Enemies = KnownEnemies;
 }

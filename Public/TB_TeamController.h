@@ -17,6 +17,8 @@ class UE4_TURNBASED_API ATB_TeamController : public AController
 public:
 	ATB_TeamController(const FObjectInitializer& ObjectInitializer);
 
+	void BeginPlay();
+
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Game")
 	void PlayTurn();
 
@@ -43,6 +45,12 @@ public:
 	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "Team Members")
 	void RegisterCharacter(ATB_Character* NewCharacter);
 
+	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "Target Selection")
+	void RegisterEnemy(ATB_Character* Enemy);
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Target Selection")
+	void GetKnownEnemies(TArray<ATB_Character*>& Enemies);
+
 	UPROPERTY(BlueprintReadWrite, Category = "Team Members")
 	TArray<ATB_Character*> Characters;
 
@@ -56,5 +64,7 @@ private:
 	UPROPERTY()
 	uint32 CurrentCharacterId = 0;
 
+	UPROPERTY()
+	TArray<ATB_Character *> KnownEnemies;
 };
 

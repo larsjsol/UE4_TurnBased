@@ -56,3 +56,8 @@ void ATB_GameState::BeginPlay()
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString("Starting turn ") += FString::FromInt(Turn));
 	TeamControllers[CurrentTeamId]->PlayTurn();
 }
+
+const TArray<ATB_TeamController *>& ATB_GameState::GetTeamControllers()
+{
+	return TeamControllers;
+}
