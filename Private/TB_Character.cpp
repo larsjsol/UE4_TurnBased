@@ -5,6 +5,7 @@
 #include "TB_GameState.h"
 
 #include "AIController.h"
+#include "AI/Navigation/NavigationPath.h"
 
 ATB_Character::ATB_Character(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -54,15 +55,12 @@ bool ATB_Character::CanMoveTo_Implementation(FVector Destination)
 {
 	auto *World = GetWorld();
 	auto *NavigationSystem = World->GetNavigationSystem();
+	auto *Path = NavigationSystem->FindPathToLocationSynchronously(World, GetActorLocation(), Destination);
+	auto Length = Path->GetPathLength();
 
-	float PathLength;
-	if (NavigationSystem->GetPathLength(GetActorLocation(), Destination, PathLength) == ENavigationQueryResult::Type::Success)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, 
-			FString("Distance from ") += GetActorLocation().ToString() += FString(" to ") += Destination.ToString() += FString(": ") += FString::SanitizeFloat(PathLength));
-		return PathLength <= Movement;
-	}
-	return false;
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString("Path length: ") += FString::SanitizeFloat(Length / 100) += FString("m"));
+
+	return Length >= 0 && Length <= Movement;
 }
 
 void ATB_Character::MoveTo_Implementation(FVector Destination)
