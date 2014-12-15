@@ -3,8 +3,11 @@
 #pragma once
 
 #include "GameFramework/Character.h"
+
 #include "TB_Character.generated.h"
 
+class ATB_Weapon;
+class UTB_WeaponClass;
 /**
  * 
  */
@@ -15,22 +18,24 @@ class UE4_TURNBASED_API ATB_Character : public ACharacter
 public:
 	ATB_Character(const FObjectInitializer& ObjectInitializer);
 
-	void BeginPlay();
+	virtual void BeginPlay() OVERRIDE;
+	virtual void OnConstruction(const FTransform& Transform) OVERRIDE;
 
 	/* Action Points */
-	UPROPERTY(BlueprintReadWrite, Category = "Game Rules")
+	UPROPERTY(BlueprintReadWrite, Category = "Game")
 	int32 ActionPoints = 2;
-	UPROPERTY(BlueprintReadWrite, Category = "Game Rules")
+	UPROPERTY(BlueprintReadWrite, Category = "Game")
 	int32 MaxActionPoints = 2;
 
 	/* Hit Points */
-	UPROPERTY(BlueprintReadWrite, Category = "Game Rules")
+	UPROPERTY(BlueprintReadWrite, Category = "Game")
 	int32 HitPoints = 10;
-	UPROPERTY(BlueprintReadWrite, Category = "Game Rules")
+	UPROPERTY(BlueprintReadWrite, Category = "Game")
 	int32 MaxHitPoints = 10;
 
-	UPROPERTY(BlueprintReadWrite, Category = "Game Rules")
-	float Movement = 1000; //10m
+	// How far the actor can move when spending one AP
+	UPROPERTY(BlueprintReadWrite, Category = "Game")
+	float Movement = 1000;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Flavour")
 	FName Name;
@@ -38,13 +43,19 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Flavour")
 	FName TeamName = "Team AI";
 
-	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "Game Rules")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Equipment")
+	UClass *WeaponClass = NULL;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Equipment")
+	ATB_Weapon *Weapon = NULL;
+
+	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "Game ")
 	void PrepareForNextTurn();
 
-	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "Game Rules")
+	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "Game")
 	void PrepareForThisTurn();
 
-	/* Is character performing an action right now? */
+	//Is character performing an action right now?
 	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "Game")
 	bool IsBusy();
 
