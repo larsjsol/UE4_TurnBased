@@ -10,12 +10,33 @@ class ATB_Character;
 /**
  * 
  */
+USTRUCT(BlueprintType)
+struct FTB_WeaponAnimSet
+{
+	GENERATED_USTRUCT_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Reload")
+	UAnimationAsset *Reload = NULL;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Reload")
+	UAnimationAsset *ReloadKneel = NULL;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Reload")
+	UAnimationAsset *ReloadProne = NULL;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
+	UAnimationAsset *Attack = NULL;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
+	UAnimationAsset *AttackKneel = NULL;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
+	UAnimationAsset *AttackProne = NULL;
+};
+
 UENUM(BlueprintType)
 enum class ETB_WeaponAnimType : uint8
 {
-	VE_GunShoulder		UMETA(DisplayName = "Gun Shoulder"),
-	VE_GunHip           UMETA(DisplayName = "Gun Hip"),
-	VE_Pistol           UMETA(DisplayName = "Pistol"),
+	VE_GunShoulder	= 0			UMETA(DisplayName = "Gun Shoulder"),
+	VE_GunHip		= 1			UMETA(DisplayName = "Gun Hip"),
+	VE_Pistol		= 2			UMETA(DisplayName = "Pistol"),
+	VE_Length					UMETA(Hidden)
 };
 
 UCLASS()
@@ -41,8 +62,6 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, Category = "Flavour")
 	FText ModelName;
-	UPROPERTY(BlueprintReadWrite, Category = "Flavour")
-	TArray<ETB_WeaponAnimType> AnimationTypes;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Default")
 	FName SocketName = "RightHand";
@@ -52,6 +71,12 @@ public:
 	UStaticMeshComponent *StaticMeshComponent;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Default")
 	USkeletalMeshComponent *SkeletalMeshComponent;
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Animation")
+	ETB_WeaponAnimType AnimType;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Animation")
+	FTB_WeaponAnimSet AnimSet;
 
 	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "Game Rules")
 	int32 HitModifier(float range);
@@ -64,13 +89,21 @@ public:
 	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "Game Rules")
 	void UnEquip();
 
-	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "Game Rules")
-	void Attack(ATB_Character *Target);
+	UFUNCTION(BlueprintCallable, Category = "Animation")
+	float PlayAnimation(UAnimationAsset *AnimationAsset);
 
-	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "Game Rules")
-	void Reload();
+	/*
+		Start the attack animation and returns its duration
+	*/
+	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "Animation")
+	float Attack();
 
-
+	/* 
+		Update Ammo and start the reload animation (if any) 
+		Returns the duration of the reload animation	
+	*/
+	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "Animation")
+	float Reload();
 
 private:
 	ATB_Character *EquippedBy = NULL;

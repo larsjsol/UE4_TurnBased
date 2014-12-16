@@ -55,11 +55,20 @@ void ATB_PlayerController::SelectNextCharacter_Implementation()
 	TeamController->ActivateNextCharacterThatCanAct();
 }
 
-void ATB_PlayerController::MoveCharacterTo_Implementation(FVector Destination)
+void ATB_PlayerController::CharacterMoveTo_Implementation(FVector Destination)
 {
 	auto *Character = TeamController->GetActiveCharacter();
 	if (Character)
 	{
 		Character->MoveTo(Destination);
+	}
+}
+
+void ATB_PlayerController::CharacterReload_Implementation()
+{
+	auto *Character = TeamController->GetActiveCharacter();
+	if (Character)
+	{
+		Character->Reload();
 	}
 }

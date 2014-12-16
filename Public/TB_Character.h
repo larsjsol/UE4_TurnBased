@@ -3,14 +3,14 @@
 #pragma once
 
 #include "GameFramework/Character.h"
+#include "TB_Weapon.h"
 
 #include "TB_Character.generated.h"
 
-class ATB_Weapon;
-class UTB_WeaponClass;
 /**
  * 
  */
+
 UCLASS()
 class UE4_TURNBASED_API ATB_Character : public ACharacter
 {
@@ -18,8 +18,7 @@ class UE4_TURNBASED_API ATB_Character : public ACharacter
 public:
 	ATB_Character(const FObjectInitializer& ObjectInitializer);
 
-	virtual void BeginPlay() OVERRIDE;
-	virtual void OnConstruction(const FTransform& Transform) OVERRIDE;
+	virtual void BeginPlay() override;
 
 	/* Action Points */
 	UPROPERTY(BlueprintReadWrite, Category = "Game")
@@ -49,13 +48,16 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Equipment")
 	ATB_Weapon *Weapon = NULL;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Equipment")
+	TArray<FTB_WeaponAnimSet> WeaponHandlingAnimations;
+
 	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "Game ")
 	void PrepareForNextTurn();
 
 	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "Game")
 	void PrepareForThisTurn();
 
-	//Is character performing an action right now?
+	//Is the character performing an action right now?
 	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "Game")
 	bool IsBusy();
 
@@ -64,6 +66,12 @@ public:
 
 	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "Game")
 	void ClearBusy();
+
+	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "Game")
+	void Reload();
+
+	UFUNCTION(BlueprintCallable, Category = "Animation")
+	float PlayAnimation(UAnimationAsset *AnimationAsset);
 
 	/* Navigation */
 	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "Navigation")

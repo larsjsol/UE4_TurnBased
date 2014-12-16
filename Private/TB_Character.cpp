@@ -8,36 +8,15 @@
 #include "AIController.h"
 #include "AI/Navigation/NavigationPath.h"
 
+#include <algorithm>
+
 ATB_Character::ATB_Character(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
 	AIControllerClass = AAIController::StaticClass();
-
+	WeaponHandlingAnimations.AddZeroed((int32) ETB_WeaponAnimType::VE_Length);
 }
 
-void ATB_Character::OnConstruction(const FTransform& Transform)
-{
-	ACharacter::OnConstruction(Transform);
-
-	/* Use the actor name if no other is given */
-	if (Name.IsNone())
-	{
-		Name = this->GetFName();
-	}
-
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, Name.ToString());
-
-	/* Equip weapon if we have one */
-	if (!Weapon && WeaponClass)
-	{
-		UWorld *World = GetWorld();
-		Weapon = World->SpawnActor<ATB_Weapon>(WeaponClass);
-	}
-	if (Weapon)
-	{
-		Weapon->Equip(this);
-	}
-}
 
 void ATB_Character::BeginPlay()
 {
@@ -56,6 +35,18 @@ void ATB_Character::BeginPlay()
 		UE_LOG(TB_Log, Warning, TEXT("%s is part of team %s, but no such team exist"), *Name.ToString(), *TeamName.ToString());
 	}
 
+	/* Use the actor name if no other is given */
+	if (Name.IsNone())
+	{
+		Name = this->GetFName();
+	}
+
+	/* Equip weapon if we have one  */
+	if (WeaponClass && Weapon == NULL)
+	{
+		Weapon = GetWorld()->SpawnActor<ATB_Weapon>(WeaponClass);
+		Weapon->Equip(this);
+	}
 }
 
 void ATB_Character::PrepareForNextTurn_Implementation()
@@ -83,6 +74,32 @@ void ATB_Character::SetBusy_Implementation(float BusyDuration)
 void ATB_Character::ClearBusy_Implementation()
 {
 	Busy = false;
+}
+
+void ATB_Character::Reload_Implementation()
+{
+	/* Do we have enough APs and a weapon? */
+	if (ActionPoints <= 0 || Weapon == NULL)
+	{
+		return;
+	}
+
+	/* figure out how much time we will spend on this */
+	float ReloadTime = PlayAnimation(WeaponHandlingAnimations[(int32) Weapon->AnimType].Reload);
+	float WeaponReloadTime = Weapon->Reload();
+	SetBusy(std::max(ReloadTime, WeaponReloadTime));
+	
+	ActionPoints--;
+}
+
+float ATB_Character::PlayAnimation(UAnimationAsset *AnimationAsset) {
+	if (Mesh && AnimationAsset)
+	{
+		Mesh->PlayAnimation(AnimationAsset, false);
+		UAnimInstance *AnimInstance = Mesh->GetAnimInstance();
+		return AnimInstance->GetAnimAssetPlayerLength(AnimationAsset);
+	}
+	return 0;
 }
 
 bool ATB_Character::CanMoveTo_Implementation(FVector Destination)

@@ -34,7 +34,10 @@ public:
 	void SelectNextCharacter();
 
 	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "User Actions")
-	void MoveCharacterTo(FVector Destination);
+	void CharacterMoveTo(FVector Destination);
+
+	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "User Actions")
+	void CharacterReload();
 
 private:
 	UPROPERTY()

@@ -35,14 +35,25 @@ int32 ATB_Weapon::DamageModifier_Implementation(float range)
 	return 0;
 }
 
-void ATB_Weapon::Attack_Implementation(ATB_Character *Target)
-{
-	;
+float ATB_Weapon::PlayAnimation(UAnimationAsset *AnimationAsset) {
+	if (SkeletalMeshComponent && AnimationAsset)
+	{
+		SkeletalMeshComponent->PlayAnimation(AnimationAsset, false);
+		UAnimInstance *AnimInstance = SkeletalMeshComponent->GetAnimInstance();
+		return AnimInstance->GetAnimAssetPlayerLength(AnimationAsset);
+	}
+	return 0;
 }
 
-void ATB_Weapon::Reload_Implementation()
+float ATB_Weapon::Attack_Implementation()
 {
-	;
+	return PlayAnimation(AnimSet.Attack);
+}
+
+float ATB_Weapon::Reload_Implementation()
+{
+	Ammo = MaxAmmo;
+	return PlayAnimation(AnimSet.Reload);
 }
 
 
