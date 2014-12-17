@@ -85,6 +85,12 @@ void ATB_Character::SetBusy_Implementation(float BusyDuration)
 void ATB_Character::ClearBusy_Implementation()
 {
 	Busy = false;
+
+	// set the mesh back to animblueprint mode in case we played any animations
+	//if (Mesh)
+	//{
+	//	Mesh->SetAnimationMode(EAnimationMode::AnimationBlueprint);
+	//}
 }
 
 void ATB_Character::Reload_Implementation()
@@ -103,12 +109,13 @@ void ATB_Character::Reload_Implementation()
 	ActionPoints--;
 }
 
-float ATB_Character::PlayAnimation(UAnimationAsset *AnimationAsset) {
-	if (Mesh && AnimationAsset)
+float ATB_Character::PlayAnimation(UAnimSequence *Animation) {
+	if (Mesh && Animation)
 	{
-		Mesh->PlayAnimation(AnimationAsset, false);
 		UAnimInstance *AnimInstance = Mesh->GetAnimInstance();
-		return AnimInstance->GetAnimAssetPlayerLength(AnimationAsset);
+		AnimInstance->PlaySlotAnimation(Animation, FName("DefaultSlot"));
+
+		return AnimInstance->GetAnimAssetPlayerLength(Animation);
 	}
 	return 0;
 }

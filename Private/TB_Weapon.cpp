@@ -37,12 +37,12 @@ int32 ATB_Weapon::DamageModifier_Implementation(float range)
 	return 0;
 }
 
-float ATB_Weapon::PlayAnimation(UAnimationAsset *AnimationAsset) {
-	if (SkeletalMeshComponent && AnimationAsset)
+float ATB_Weapon::PlayAnimation(UAnimSequence *Animation) {
+	if (SkeletalMeshComponent && Animation)
 	{
-		SkeletalMeshComponent->PlayAnimation(AnimationAsset, false);
+		SkeletalMeshComponent->PlayAnimation(Animation, false);
 		UAnimInstance *AnimInstance = SkeletalMeshComponent->GetAnimInstance();
-		return AnimInstance->GetAnimAssetPlayerLength(AnimationAsset);
+		return AnimInstance->GetAnimAssetPlayerLength(Animation);
 	}
 	return 0;
 }

@@ -78,7 +78,7 @@ public:
 	void Reload();
 
 	UFUNCTION(BlueprintCallable, Category = "Animation")
-	float PlayAnimation(UAnimationAsset *AnimationAsset);
+	float PlayAnimation(UAnimSequence *Animation);
 
 	/* Navigation */
 	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "Navigation")

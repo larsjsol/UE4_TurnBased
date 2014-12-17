@@ -16,18 +16,18 @@ struct FTB_WeaponAnimSet
 	GENERATED_USTRUCT_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Reload")
-	UAnimationAsset *Reload = NULL;
+	UAnimSequence *Reload = NULL;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Reload")
-	UAnimationAsset *ReloadKneel = NULL;
+	UAnimSequence *ReloadKneel = NULL;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Reload")
-	UAnimationAsset *ReloadProne = NULL;
+	UAnimSequence *ReloadProne = NULL;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
-	UAnimationAsset *Attack = NULL;
+	UAnimSequence *Attack = NULL;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
-	UAnimationAsset *AttackKneel = NULL;
+	UAnimSequence *AttackKneel = NULL;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
-	UAnimationAsset *AttackProne = NULL;
+	UAnimSequence *AttackProne = NULL;
 };
 
 UENUM(BlueprintType)
@@ -90,7 +90,7 @@ public:
 	void UnEquip();
 
 	UFUNCTION(BlueprintCallable, Category = "Animation")
-	float PlayAnimation(UAnimationAsset *AnimationAsset);
+	float PlayAnimation(UAnimSequence *Animation);
 
 	/*
 		Start the attack animation and returns its duration
