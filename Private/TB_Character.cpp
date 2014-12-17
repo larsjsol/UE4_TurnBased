@@ -15,6 +15,17 @@ ATB_Character::ATB_Character(const FObjectInitializer& ObjectInitializer)
 {
 	AIControllerClass = AAIController::StaticClass();
 	WeaponHandlingAnimations.AddZeroed((int32) ETB_WeaponAnimType::VE_Length);
+
+	/* set up the overhead spring arm and camera */
+	OverheadSpringArm = ObjectInitializer.CreateAbstractDefaultSubobject<USpringArmComponent>(this, TEXT("OverheadSpringArm"));
+	OverheadSpringArm->AttachParent = Mesh;
+
+	OverheadCamera = ObjectInitializer.CreateAbstractDefaultSubobject<UCameraComponent>(this, TEXT("OverheadCamera"));
+	OverheadCamera->AttachParent = OverheadSpringArm;
+	/* Somewhat sane defaults */
+	OverheadSpringArm->RelativeLocation.Z = 140;
+	OverheadSpringArm->RelativeRotation.Yaw = 90;
+	OverheadSpringArm->RelativeRotation.Pitch = -30;
 }
 
 

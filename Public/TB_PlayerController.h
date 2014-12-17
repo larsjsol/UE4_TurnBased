@@ -20,6 +20,8 @@ public:
 
 	void BeginPlay();
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Controller")
+	UClass *TeamControllerClass = NULL;
 	UPROPERTY(BlueprintReadWrite, Category = "Controller")
 	ATB_TeamController *TeamController = NULL;
 

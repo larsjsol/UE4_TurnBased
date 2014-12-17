@@ -9,7 +9,7 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(Blueprintable, BlueprintType)
 class UE4_TURNBASED_API ATB_TeamController : public AController
 {
 	GENERATED_BODY()

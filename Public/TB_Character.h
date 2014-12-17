@@ -36,6 +36,13 @@ public:
 	UPROPERTY(BlueprintReadWrite, Category = "Game")
 	float Movement = 1000;
 
+	/* Components */
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Default")
+	USpringArmComponent *OverheadSpringArm;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Default")
+	UCameraComponent *OverheadCamera;
+
+
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Flavour")
 	FName Name;
 

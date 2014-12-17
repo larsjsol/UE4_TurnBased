@@ -9,24 +9,23 @@
 ATB_PlayerController::ATB_PlayerController(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
-
+	TeamControllerClass = ATB_TeamController::StaticClass();
 }
 
 void ATB_PlayerController::BeginPlay() 
 {
-	APlayerController::BeginPlay();
-
-	UWorld* world = GetWorld();
-	GameState = (ATB_GameState *)world->GameState;
+	UWorld* World = GetWorld();
+	GameState = (ATB_GameState *) World->GameState;
 
 	//initialize TB_TeamController
-	TeamController = world->SpawnActor<ATB_TeamController>(FActorSpawnParameters());
+	TeamController = World->SpawnActor<ATB_TeamController>(TeamControllerClass);
 
 	//set team name and register our teamcontroller with the gamestate
 	TeamController->TeamName = FName(TEXT("Team Human"));
 	GameState->RegisterTeamController(TeamController);
-
 	TeamController->PlayerController = this;
+
+	Super::BeginPlay();
 }
 
 bool ATB_PlayerController::LineTraceFromScreenPos(float ScreenX, float ScreenY, FHitResult& WorldHit)
