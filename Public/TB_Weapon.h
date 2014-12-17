@@ -47,9 +47,9 @@ public:
 	ATB_Weapon(const FObjectInitializer& ObjectInitializer);
 
 	/* Range */
-	UPROPERTY(BlueprintReadWrite, Category = "Game Rules")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Game Rules")
 	float MinRange = 0;
-	UPROPERTY(BlueprintReadWrite, Category = "Game Rules")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Game Rules")
 	float MaxRange = 0;
 	/* Damage */
 	UPROPERTY(BlueprintReadWrite, Category = "Game Rules")
@@ -57,7 +57,7 @@ public:
 	/* Ammo */
 	UPROPERTY(BlueprintReadWrite, Category = "Game Rules")
 	int32 Ammo = 0;
-	UPROPERTY(BlueprintReadWrite, Category = "Game Rules")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Game Rules")
 	int32 MaxAmmo = 0;
 
 	UPROPERTY(BlueprintReadWrite, Category = "Flavour")

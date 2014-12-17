@@ -13,6 +13,8 @@ ATB_Weapon::ATB_Weapon(const FObjectInitializer& ObjectInitializer)
 	StaticMeshComponent->AttachParent = RootComponent;
 	SkeletalMeshComponent = ObjectInitializer.CreateAbstractDefaultSubobject<USkeletalMeshComponent>(this, TEXT("SkeletalMesh"));
 	SkeletalMeshComponent->AttachParent = RootComponent;
+
+	Ammo = MaxAmmo;
 }
 
 void ATB_Weapon::Equip_Implementation(ATB_Character *EquippedBy) {
