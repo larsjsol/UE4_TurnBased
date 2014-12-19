@@ -43,9 +43,9 @@ void ATB_Character::BeginPlay()
 	ACharacter::BeginPlay();
 
 	/* Use the actor name if no other is given */
-	if (Name.IsNone())
+	if (CharacterName.IsEmpty())
 	{
-		Name = this->GetFName();
+		CharacterName = FText::FromString(GetName());
 	}
 
 	/* Join a team */
@@ -190,7 +190,6 @@ void ATB_Character::TargetNextEnemy_Implementation()
 
 		if (EnemyTarget)
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, EnemyTarget->Name.ToString());
 			LookAt(EnemyTarget);
 		}
 	}

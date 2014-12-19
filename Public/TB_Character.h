@@ -25,18 +25,22 @@ public:
 	/* Action Points */
 	UPROPERTY(BlueprintReadWrite, Category = "Game")
 	int32 ActionPoints = 2;
-	UPROPERTY(BlueprintReadWrite, Category = "Game")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Game")
 	int32 MaxActionPoints = 2;
 
 	/* Hit Points */
 	UPROPERTY(BlueprintReadWrite, Category = "Game")
 	int32 HitPoints = 10;
-	UPROPERTY(BlueprintReadWrite, Category = "Game")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Game")
 	int32 MaxHitPoints = 10;
 
 	// How far the actor can move when spending one AP
-	UPROPERTY(BlueprintReadWrite, Category = "Game")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Game")
 	float Movement = 1000;
+
+	/* Skills */
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Game")
+	int32 RangedAttackSkill = 50;
 
 	/* Overhead and FP camera */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Default")
@@ -51,7 +55,7 @@ public:
 
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Flavour")
-	FName Name;
+	FText CharacterName;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Flavour")
 	FName TeamName = "Team AI";
@@ -59,7 +63,7 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Equipment")
 	UClass *WeaponClass = NULL;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Equipment")
+	UPROPERTY(BlueprintReadWrite, Category = "Equipment")
 	ATB_Weapon *Weapon = NULL;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Equipment")

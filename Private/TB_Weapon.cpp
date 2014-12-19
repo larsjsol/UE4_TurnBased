@@ -13,12 +13,16 @@ ATB_Weapon::ATB_Weapon(const FObjectInitializer& ObjectInitializer)
 	StaticMeshComponent->AttachParent = RootComponent;
 	SkeletalMeshComponent = ObjectInitializer.CreateAbstractDefaultSubobject<USkeletalMeshComponent>(this, TEXT("SkeletalMesh"));
 	SkeletalMeshComponent->AttachParent = RootComponent;
+}
 
+void ATB_Weapon::BeginPlay()
+{
 	Ammo = MaxAmmo;
 }
 
-void ATB_Weapon::Equip_Implementation(ATB_Character *EquippedBy) {
-	EquippedBy = EquippedBy;
+void ATB_Weapon::Equip_Implementation(ATB_Character *EquippedBy)
+{
+	this->EquippedBy = EquippedBy;
 	AttachRootComponentTo(EquippedBy->Mesh, SocketName);
 }
 
@@ -29,7 +33,11 @@ void ATB_Weapon::UnEquip_Implementation()
 
 int32 ATB_Weapon::HitModifier_Implementation(float range)
 {
-	return 0;
+	/* 
+	default to a small penalty of -2 per 10 meters on the account 
+	of "things getting smaller as they are further away"
+	*/
+	return range / -500;
 }
 
 int32 ATB_Weapon::DamageModifier_Implementation(float range)

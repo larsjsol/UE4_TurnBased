@@ -45,6 +45,7 @@ class UE4_TURNBASED_API ATB_Weapon : public AActor
 	GENERATED_BODY()
 public:
 	ATB_Weapon(const FObjectInitializer& ObjectInitializer);
+	virtual void BeginPlay() override;
 
 	/* Range */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Game Rules")
@@ -52,15 +53,16 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Game Rules")
 	float MaxRange = 0;
 	/* Damage */
-	UPROPERTY(BlueprintReadWrite, Category = "Game Rules")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Game Rules")
 	int32 BaseDamage = 0;
+
 	/* Ammo */
 	UPROPERTY(BlueprintReadWrite, Category = "Game Rules")
 	int32 Ammo = 0;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Game Rules")
 	int32 MaxAmmo = 0;
 
-	UPROPERTY(BlueprintReadWrite, Category = "Flavour")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Flavour")
 	FText ModelName;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Default")
