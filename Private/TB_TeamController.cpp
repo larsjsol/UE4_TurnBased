@@ -20,17 +20,13 @@ void ATB_TeamController::BeginPlay()
 	auto *World = GetWorld();
 	auto *GameState = (ATB_GameState *)World->GameState;
 	auto TeamControllers = GameState->GetTeamControllers();
-
 	for (auto *tc : TeamControllers) 
 	{
 		if (tc->TeamName != TeamName)
 		{
 			for (auto *c : tc->Characters)
 			{
-				if (c->HitPoints > 0)
-				{
-					KnownEnemies.Add(c);
-				}
+				KnownEnemies.Add(c);
 			}
 		}
 	}

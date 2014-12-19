@@ -51,10 +51,6 @@ void ATB_GameState::BeginPlay()
 	//initialize TB_GameLog
 	GameLog = world->SpawnActor<ATB_GameLog>(FActorSpawnParameters());
 
-	//make sure that there are at least one enemy team
-	controller->TeamName = FName(TEXT("Team AI"));
-	RegisterTeamController(controller);
-
 	GameLog->Log(ETB_LogCategory::VE_TurnClock, "Starting game");
 	TeamControllers[CurrentTeamId]->PlayTurn();
 }

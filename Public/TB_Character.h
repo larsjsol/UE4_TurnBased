@@ -11,6 +11,8 @@
  * 
  */
 
+class ATB_TeamController;
+
 UCLASS()
 class UE4_TURNBASED_API ATB_Character : public ACharacter
 {
@@ -36,11 +38,16 @@ public:
 	UPROPERTY(BlueprintReadWrite, Category = "Game")
 	float Movement = 1000;
 
-	/* Components */
+	/* Overhead and FP camera */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Default")
 	USpringArmComponent *OverheadSpringArm;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Default")
-	UCameraComponent *OverheadCamera;
+	ACameraActor *OverheadCamera;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Default")
+	USpringArmComponent *FPSpringArm;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Default")
+	ACameraActor *FPCamera;
+
 
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Flavour")
@@ -57,6 +64,10 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Equipment")
 	TArray<FTB_WeaponAnimSet> WeaponHandlingAnimations;
+
+	/* Which enemy is targeted */
+	UPROPERTY(BlueprintReadWrite, Category = "Game")
+	ATB_Character *EnemyTarget = NULL;
 
 	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "Game ")
 	void PrepareForNextTurn();
@@ -87,6 +98,15 @@ public:
 	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "Navigation")
 	void MoveTo(FVector Destination);
 
+	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "Navigation")
+	void LookAt(AActor *Target);
+
+	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "Game")
+	void TargetNextEnemy();
+
 private:
 	bool Busy = false;
+
+	UPROPERTY()
+	ATB_TeamController *TeamController;
 };

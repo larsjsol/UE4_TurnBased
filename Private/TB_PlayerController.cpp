@@ -71,3 +71,12 @@ void ATB_PlayerController::CharacterReload_Implementation()
 		Character->Reload();
 	}
 }
+
+void ATB_PlayerController::CharacterTargetNextEnemy_Implementation()
+{
+	auto *Character = TeamController->GetActiveCharacter();
+	if (Character)
+	{
+		Character->TargetNextEnemy();
+	}
+}

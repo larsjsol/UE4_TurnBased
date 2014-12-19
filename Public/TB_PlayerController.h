@@ -41,6 +41,9 @@ public:
 	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "User Actions")
 	void CharacterReload();
 
+	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "User Actions")
+	void CharacterTargetNextEnemy();
+
 private:
 	UPROPERTY()
 	ATB_GameState *GameState = NULL;
