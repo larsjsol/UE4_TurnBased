@@ -45,14 +45,12 @@ public:
 	/* Overhead and FP camera */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Default")
 	USpringArmComponent *OverheadSpringArm;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Default")
+	UPROPERTY(BlueprintReadWrite, Category = "Default")
 	ACameraActor *OverheadCamera;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Default")
 	USpringArmComponent *FPSpringArm;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Default")
+	UPROPERTY(BlueprintReadWrite, Category = "Default")
 	ACameraActor *FPCamera;
-
-
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Flavour")
 	FText CharacterName;
@@ -83,7 +81,7 @@ public:
 	void PrepareForThisTurn();
 
 	//Is the character performing an action right now?
-	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "Game")
+	UFUNCTION(BluePrintNativeEvent, BlueprintPure, Category = "Game")
 	bool IsBusy();
 
 	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "Game")
@@ -99,7 +97,7 @@ public:
 	float PlayAnimation(UAnimSequence *Animation);
 
 	/* Navigation */
-	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "Navigation")
+	UFUNCTION(BluePrintNativeEvent, BlueprintPure, Category = "Navigation")
 	bool CanMoveTo(FVector Destination);
 
 	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "Navigation")
@@ -112,11 +110,11 @@ public:
 	void TargetNextEnemy();
 
 	/* Hit chance after applying all modifiers */
-	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "Game")
+	UFUNCTION(BluePrintNativeEvent, BlueprintPure, Category = "Game")
 	int32 HitChance();
 
 	/* Expected damage dealt after all modifiers */
-	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "Game")
+	UFUNCTION(BluePrintNativeEvent, BlueprintPure, Category = "Game")
 	int32 Damage();
 
 private:

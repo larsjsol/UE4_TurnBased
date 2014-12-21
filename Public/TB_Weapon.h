@@ -80,9 +80,9 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Animation")
 	FTB_WeaponAnimSet AnimSet;
 
-	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "Game Rules")
+	UFUNCTION(BluePrintNativeEvent, BlueprintPure, Category = "Game Rules")
 	int32 HitModifier(float range);
-	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "Game Rules")
+	UFUNCTION(BluePrintNativeEvent, BluePrintPure, Category = "Game Rules")
 	int32 DamageModifier(float range);
 
 	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "Game Rules")
