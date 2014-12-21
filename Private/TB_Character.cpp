@@ -47,6 +47,11 @@ void ATB_Character::BeginPlay()
 	{
 		CharacterName = FText::FromString(GetName());
 	}
+	/* Use blueprint class name if no other is given */
+	if (SpeciesName.IsEmpty())
+	{
+		SpeciesName = FText::FromString(StaticClass()->GetName());
+	}
 
 	/* Join a team */
 	auto *World = GetWorld();
@@ -193,4 +198,34 @@ void ATB_Character::TargetNextEnemy_Implementation()
 			LookAt(EnemyTarget);
 		}
 	}
+}
+
+int32 ATB_Character::HitChance_Implementation()
+{
+	int32 ToHit = 0;
+
+	if (Weapon && EnemyTarget)
+	{
+		float Range = GetDistanceTo(EnemyTarget);
+		
+		ToHit = RangedAttackSkill;
+		ToHit += Weapon->HitModifier(Range);
+	}
+
+	return ToHit;
+}
+
+int32 ATB_Character::Damage_Implementation()
+{
+	int32 Damage = 0;
+
+	if (Weapon && EnemyTarget)
+	{
+		float Range = GetDistanceTo(EnemyTarget);
+
+		Damage = Weapon->BaseDamage;
+		Damage += Weapon->DamageModifier(Range);
+	}
+
+	return Damage;
 }

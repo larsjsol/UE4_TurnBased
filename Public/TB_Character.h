@@ -58,6 +58,9 @@ public:
 	FText CharacterName;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Flavour")
+	FText SpeciesName;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Flavour")
 	FName TeamName = "Team AI";
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Equipment")
@@ -107,6 +110,14 @@ public:
 
 	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "Game")
 	void TargetNextEnemy();
+
+	/* Hit chance after applying all modifiers */
+	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "Game")
+	int32 HitChance();
+
+	/* Expected damage dealt after all modifiers */
+	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "Game")
+	int32 Damage();
 
 private:
 	bool Busy = false;
