@@ -121,7 +121,11 @@ void ATB_Character::PrepareForNextTurn_Implementation()
 
 void ATB_Character::PrepareForThisTurn_Implementation()
 {
-	;
+	//See if we can target an enemy
+	if (!EnemyTarget)
+	{
+		TargetNextEnemy();
+	}
 }
 
 bool ATB_Character::IsBusy_Implementation()
