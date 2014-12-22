@@ -42,6 +42,9 @@ public:
 	void CharacterReload();
 
 	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "User Actions")
+	void CharacterAttack();
+
+	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "User Actions")
 	void CharacterTargetNextEnemy();
 
 private:

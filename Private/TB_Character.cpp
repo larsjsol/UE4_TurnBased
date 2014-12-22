@@ -36,13 +36,13 @@ ATB_Character::ATB_Character(const FObjectInitializer& ObjectInitializer)
 	FPSpringArm->TargetArmLength = 75;
 	FPSpringArm->CameraLagSpeed = 10;
 	FPSpringArm->CameraRotationLagSpeed = 10;
-
-	AnimInstance = (UTB_AnimInstance*) GetMesh()->GetAnimInstance();
 }
 
 void ATB_Character::BeginPlay()
 {
 	ACharacter::BeginPlay();
+
+	AnimInstance = (UTB_AnimInstance*)GetMesh()->GetAnimInstance();
 
 	/* Use the actor name if no other is given */
 	if (CharacterName.IsEmpty())
@@ -130,6 +130,16 @@ void ATB_Character::Reload_Implementation()
 	SetBusy(std::max(ReloadTime, WeaponReloadTime));
 	
 	ActionPoints--;
+}
+
+void ATB_Character::InitiateAttack_Implementation()
+{
+	if (Weapon && EnemyTarget)
+	{
+		float AttackTime = AnimInstance->PlayAnimation(AnimInstance->GetAttackAnim());
+		float WeaponAttackTime = Weapon->Attack();
+		SetBusy(std::max(AttackTime, WeaponAttackTime));
+	}
 }
 
 bool ATB_Character::CanMoveTo_Implementation(FVector Destination)

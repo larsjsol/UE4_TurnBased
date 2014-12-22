@@ -72,6 +72,15 @@ void ATB_PlayerController::CharacterReload_Implementation()
 	}
 }
 
+void ATB_PlayerController::CharacterAttack_Implementation()
+{
+	auto *Character = TeamController->GetActiveCharacter();
+	if (Character)
+	{
+		Character->InitiateAttack();
+	}
+}
+
 void ATB_PlayerController::CharacterTargetNextEnemy_Implementation()
 {
 	auto *Character = TeamController->GetActiveCharacter();

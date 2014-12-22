@@ -94,6 +94,14 @@ public:
 	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "Game")
 	void Reload();
 
+	/* 
+	Start the attack animatios and set the character as busy.
+	The AnimInstace expected to do a callback to Attack() at an apropriate time in 
+	order to update the game state.
+	*/
+	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "Game")
+	void InitiateAttack();
+
 	/* Navigation */
 	UFUNCTION(BluePrintNativeEvent, BlueprintPure, Category = "Navigation")
 	bool CanMoveTo(FVector Destination);
