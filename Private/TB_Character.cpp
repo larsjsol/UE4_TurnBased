@@ -4,6 +4,7 @@
 #include "TB_Character.h"
 #include "TB_GameState.h"
 #include "TB_Weapon.h"
+#include "TB_AnimInstance.h"
 
 #include "AIController.h"
 #include "AI/Navigation/NavigationPath.h"
@@ -14,7 +15,6 @@ ATB_Character::ATB_Character(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
 	AIControllerClass = AAIController::StaticClass();
-	WeaponHandlingAnimations.AddZeroed((int32)ETB_WeaponAnimType::VE_Length);
 
 	/* set up the overhead spring arm, the camera is spawned in BeginPlay()  */
 	OverheadSpringArm = ObjectInitializer.CreateAbstractDefaultSubobject<USpringArmComponent>(this, TEXT("OverheadSpringArm"));
@@ -36,6 +36,8 @@ ATB_Character::ATB_Character(const FObjectInitializer& ObjectInitializer)
 	FPSpringArm->TargetArmLength = 75;
 	FPSpringArm->CameraLagSpeed = 10;
 	FPSpringArm->CameraRotationLagSpeed = 10;
+
+	AnimInstance = (UTB_AnimInstance*) GetMesh()->GetAnimInstance();
 }
 
 void ATB_Character::BeginPlay()
@@ -122,23 +124,12 @@ void ATB_Character::Reload_Implementation()
 		return;
 	}
 
-	/* figure out how much time we will spend on this */
-	float ReloadTime = PlayAnimation(WeaponHandlingAnimations[(int32) Weapon->AnimType].Reload);
+	/* start the animations and figure out how long until they are done */
+	float ReloadTime = AnimInstance->PlayAnimation(AnimInstance->GetReloadAnim());
 	float WeaponReloadTime = Weapon->Reload();
 	SetBusy(std::max(ReloadTime, WeaponReloadTime));
 	
 	ActionPoints--;
-}
-
-float ATB_Character::PlayAnimation(UAnimSequence *Animation) {
-	if (Mesh && Animation)
-	{
-		UAnimInstance *AnimInstance = Mesh->GetAnimInstance();
-		AnimInstance->PlaySlotAnimation(Animation, FName("DefaultSlot"));
-
-		return AnimInstance->GetAnimAssetPlayerLength(Animation);
-	}
-	return 0;
 }
 
 bool ATB_Character::CanMoveTo_Implementation(FVector Destination)

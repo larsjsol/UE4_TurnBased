@@ -65,6 +65,9 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Animation Sets")
 	FTB_AnimSet StandingGunShoulderAnims;
 
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Animation")
+	float PlayAnimation(UAnimSequence *Animation);
+
 	/* 
 	Getters for CurrentAnimSet which UE won't let us expose.
 	*/

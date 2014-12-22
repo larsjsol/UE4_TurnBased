@@ -48,6 +48,15 @@ void UTB_AnimInstance::BlueprintUpdateAnimation(float DeltaTimeX)
 	}
 }
 
+float UTB_AnimInstance::PlayAnimation_Implementation(UAnimSequence *Animation) {
+	if (Animation)
+	{
+		PlaySlotAnimation(Animation, FName("DefaultSlot"));
+
+		return GetAnimAssetPlayerLength(Animation);
+	}
+	return 0;
+}
 
 UAnimSequence *UTB_AnimInstance::GetIdleAnim()
 {

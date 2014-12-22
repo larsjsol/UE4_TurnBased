@@ -12,6 +12,7 @@
  */
 
 class ATB_TeamController;
+class UTB_AnimInstance;
 
 UCLASS()
 class UE4_TURNBASED_API ATB_Character : public ACharacter
@@ -67,8 +68,8 @@ public:
 	UPROPERTY(BlueprintReadWrite, Category = "Equipment")
 	ATB_Weapon *Weapon = NULL;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Equipment")
-	TArray<FTB_WeaponAnimSet> WeaponHandlingAnimations;
+	UPROPERTY(BlueprintReadOnly, Category = "Equipment")
+	UTB_AnimInstance *AnimInstance = NULL;
 
 	/* Which enemy is targeted */
 	UPROPERTY(BlueprintReadWrite, Category = "Game")
@@ -92,9 +93,6 @@ public:
 
 	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "Game")
 	void Reload();
-
-	UFUNCTION(BlueprintCallable, Category = "Animation")
-	float PlayAnimation(UAnimSequence *Animation);
 
 	/* Navigation */
 	UFUNCTION(BluePrintNativeEvent, BlueprintPure, Category = "Navigation")
