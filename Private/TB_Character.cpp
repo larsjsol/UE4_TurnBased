@@ -88,6 +88,31 @@ void ATB_Character::BeginPlay()
 	FPCamera->CameraComponent->AddRelativeRotation(FRotator(0, 180, 0));
 }
 
+float ATB_Character::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	// add an entry to the log
+	auto *GameState = (ATB_GameState *)GetWorld()->GetGameState();
+
+	HitPoints -= Damage;
+	//play the hit animation if we are not dead (death animations are handled in the animgraph)
+	if (HitPoints > 0)
+	{
+		float Time = AnimInstance->PlayAnimation(AnimInstance->GetHurtAnim());
+		SetBusy(Time);
+	}
+
+	// add an entry to the log
+	GameState->GameLog->Log(ETB_LogCategory::VE_CharacterEvent, FString::Printf(TEXT("%s hits %s"),
+		*((ATB_Character *)DamageCauser)->CharacterName.ToString(),
+		*CharacterName.ToString()));
+	// ...and another one if we are dead
+	if (HitPoints <= 0)
+	{
+		GameState->GameLog->Log(ETB_LogCategory::VE_CharacterEvent, FString::Printf(TEXT("%s is killed!"), *CharacterName.ToString()));
+	}
+
+	return Damage;
+}
 
 void ATB_Character::PrepareForNextTurn_Implementation()
 {
@@ -134,11 +159,23 @@ void ATB_Character::Reload_Implementation()
 
 void ATB_Character::InitiateAttack_Implementation()
 {
-	if (Weapon && EnemyTarget)
+	if (Weapon && EnemyTarget && ActionPoints > 0)
 	{
 		float AttackTime = AnimInstance->PlayAnimation(AnimInstance->GetAttackAnim());
 		float WeaponAttackTime = Weapon->Attack();
 		SetBusy(std::max(AttackTime, WeaponAttackTime));
+	}
+}
+
+void ATB_Character::Attack_Implementation()
+{
+	if (Weapon && EnemyTarget && ActionPoints > 0)
+	{
+		if (HitChance() > FGenericPlatformMath::Rand() % 100)
+		{
+			EnemyTarget->TakeDamage((float) Damage(), FDamageEvent(), TeamController, this);
+		}
+		ActionPoints--;
 	}
 }
 

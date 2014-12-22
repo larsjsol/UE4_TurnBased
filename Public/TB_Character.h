@@ -22,6 +22,7 @@ public:
 	ATB_Character(const FObjectInitializer& ObjectInitializer);
 
 	virtual void BeginPlay() override;
+	virtual float TakeDamage(float Damage, FDamageEvent const &DamageEvent, AController *EventInstigator, AActor *DamageCauser) override;
 
 	/* Action Points */
 	UPROPERTY(BlueprintReadWrite, Category = "Game")
@@ -101,6 +102,9 @@ public:
 	*/
 	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "Game")
 	void InitiateAttack();
+
+	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "Game")
+	void Attack();
 
 	/* Navigation */
 	UFUNCTION(BluePrintNativeEvent, BlueprintPure, Category = "Navigation")
