@@ -33,6 +33,8 @@ void UTB_AnimInstance::BlueprintUpdateAnimation(float DeltaTimeX)
 	FRotator Rotation = Character->GetActorRotation();
 	Speed = Velocity.Size();
 	Direction = CalculateDirection(Velocity, Rotation);
+	Alive = Character->HitPoints > 0;
+
 
 	Weapon = Character->Weapon;
 	if (Weapon) {

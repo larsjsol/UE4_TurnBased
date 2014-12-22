@@ -58,6 +58,8 @@ public:
 	float Speed;
 	UPROPERTY(BlueprintReadWrite, Category = "Animation Input")
 	float Direction;
+	UPROPERTY(BlueprintReadWrite, Category = "Animation Input")
+	bool Alive;
 
 	UPROPERTY(BlueprintReadWrite, Category = "Animation Input")
 	ETB_WeaponAnimType WeaponAnimType;
