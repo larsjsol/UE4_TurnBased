@@ -15,8 +15,9 @@ UENUM(BlueprintType)
 enum class ETB_LogCategory : uint8
 {
 	VE_TurnClock		UMETA(DisplayName = "Turn Clock"),
-	VE_CharacterEvent	UMETA(DisplayName = "Character Event"),
+	VE_CharacterAction	UMETA(DisplayName = "Character Action"),
 	VE_CharacterSpeech	UMETA(DIsplayName = "Character Speech"),
+	VE_Violence			UMETA(DIsplayName = "Violence"),
 };
 
 USTRUCT(BlueprintType)
@@ -44,7 +45,7 @@ public:
 
 	void Log(ETB_LogCategory Category, FString Text);
 
-	UFUNCTION(BlueprintCallable, Category = "Log")
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Log")
 	void GetLine(int32 LineFromBack, FTB_LogLine &LogLine);
 	
 private:

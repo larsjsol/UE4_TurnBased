@@ -116,13 +116,13 @@ float ATB_Character::TakeDamage(float Damage, FDamageEvent const& DamageEvent, A
 	}
 
 	// add an entry to the log
-	GameState->GameLog->Log(ETB_LogCategory::VE_CharacterEvent, FString::Printf(TEXT("%s hits %s"),
+	GameState->GameLog->Log(ETB_LogCategory::VE_Violence, FString::Printf(TEXT("%s hits %s"),
 		*((ATB_Character *)DamageCauser)->CharacterName->ToString(),
 		*CharacterName->ToString()));
 	// ...and another one if we are dead
 	if (HitPoints <= 0)
 	{
-		GameState->GameLog->Log(ETB_LogCategory::VE_CharacterEvent, FString::Printf(TEXT("%s is killed!"), *CharacterName->ToString()));
+		GameState->GameLog->Log(ETB_LogCategory::VE_Violence, FString::Printf(TEXT("%s is killed!"), *CharacterName->ToString()));
 	}
 
 	return Damage;
