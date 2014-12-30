@@ -62,12 +62,12 @@ FText UTB_Name::ToText()
 void UTB_Name::LoadNames(FString &NameFile, TArray<FString> &Names)
 {
 	FString FullPath = FPaths::GameContentDir() + NameFile;
-	UE_LOG(LogTemp, Log, TEXT("Loading names from %s"), *FullPath);
+	UE_LOG(TB_Log, Log, TEXT("Loading names from %s"), *FullPath);
 
 	bool Result = FFileHelper::LoadANSITextFileToStrings(*FullPath, NULL, Names);
 	if (!Result)
 	{
-		UE_LOG(LogTemp, Error, TEXT("Could not open %s"), *FullPath);
+		UE_LOG(TB_Log, Error, TEXT("Could not open %s"), *FullPath);
 	}
 }
 
