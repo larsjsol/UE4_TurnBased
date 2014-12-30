@@ -13,6 +13,15 @@
 
 class ATB_TeamController;
 class UTB_AnimInstance;
+class UTB_Name;
+
+UENUM(BlueprintType)
+enum class ETB_Gender : uint8
+{
+	VE_None                 UMETA(DisplayName = "None / Unimportant"),
+	VE_Male                 UMETA(DisplayName = "Male"),
+	VE_Female               UMETA(DisplayName = "Female")
+};
 
 UCLASS()
 class UE4_TURNBASED_API ATB_Character : public ACharacter
@@ -22,6 +31,7 @@ public:
 	ATB_Character(const FObjectInitializer& ObjectInitializer);
 
 	virtual void BeginPlay() override;
+	virtual void PostInitProperties() override;
 	virtual float TakeDamage(float Damage, FDamageEvent const &DamageEvent, AController *EventInstigator, AActor *DamageCauser) override;
 
 	/* Action Points */
@@ -55,7 +65,7 @@ public:
 	ACameraActor *FPCamera;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Flavour")
-	FText CharacterName;
+	UTB_Name *CharacterName = NULL;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Flavour")
 	FText SpeciesName;
@@ -75,6 +85,12 @@ public:
 	/* Which enemy is targeted */
 	UPROPERTY(BlueprintReadWrite, Category = "Game")
 	ATB_Character *EnemyTarget = NULL;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Flavour")
+	UClass *NameClass = NULL;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Flavour")
+	ETB_Gender Gender = ETB_Gender::VE_None;
 
 	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "Game ")
 	void PrepareForNextTurn();
@@ -131,5 +147,5 @@ private:
 	bool Busy = false;
 
 	UPROPERTY()
-	ATB_TeamController *TeamController;
+	ATB_TeamController *TeamController = NULL;
 };

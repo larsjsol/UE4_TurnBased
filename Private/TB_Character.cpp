@@ -5,16 +5,19 @@
 #include "TB_GameState.h"
 #include "TB_Weapon.h"
 #include "TB_AnimInstance.h"
+#include "TB_Name.h"
 
 #include "AIController.h"
 #include "AI/Navigation/NavigationPath.h"
 
 #include <algorithm>
 
+
 ATB_Character::ATB_Character(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
 	AIControllerClass = AAIController::StaticClass();
+	NameClass = UTB_Name::StaticClass();
 
 	/* set up the overhead spring arm, the camera is spawned in BeginPlay()  */
 	OverheadSpringArm = ObjectInitializer.CreateAbstractDefaultSubobject<USpringArmComponent>(this, TEXT("OverheadSpringArm"));
@@ -42,19 +45,6 @@ void ATB_Character::BeginPlay()
 {
 	ACharacter::BeginPlay();
 
-	AnimInstance = (UTB_AnimInstance*)GetMesh()->GetAnimInstance();
-
-	/* Use the actor name if no other is given */
-	if (CharacterName.IsEmpty())
-	{
-		CharacterName = FText::FromString(GetName());
-	}
-	/* Use blueprint class name if no other is given */
-	if (SpeciesName.IsEmpty())
-	{
-		SpeciesName = FText::FromString(StaticClass()->GetName());
-	}
-
 	/* Join a team */
 	auto *World = GetWorld();
 	auto *GameState = (ATB_GameState*) World->GetGameState();
@@ -68,6 +58,16 @@ void ATB_Character::BeginPlay()
 	}
 	TeamController->RegisterCharacter(this);
 
+	/* Set up the actor components that we use as cameras */
+	OverheadCamera = World->SpawnActor<ACameraActor>(FActorSpawnParameters());
+	OverheadCamera->AttachRootComponentTo(OverheadSpringArm);
+	OverheadCamera->CameraComponent->bConstrainAspectRatio = false;
+	FPCamera = World->SpawnActor<ACameraActor>(FActorSpawnParameters());
+	FPCamera->AttachRootComponentTo(FPSpringArm);
+	FPCamera->CameraComponent->bConstrainAspectRatio = false;
+	FPCamera->CameraComponent->AddRelativeRotation(FRotator(0, 180, 0));
+
+	AnimInstance = (UTB_AnimInstance*)GetMesh()->GetAnimInstance();
 
 	/* Equip weapon */
 	if (WeaponClass) {
@@ -77,15 +77,29 @@ void ATB_Character::BeginPlay()
 		Weapon = GetWorld()->SpawnActor<ATB_Weapon>(WeaponClass, SpawnParams);
 		Weapon->Equip(this);
 	}
+}
 
-	/* Set up the actor components that we use as cameras */
-	OverheadCamera = World->SpawnActor<ACameraActor>(FActorSpawnParameters());
-	OverheadCamera->AttachRootComponentTo(OverheadSpringArm);
-	OverheadCamera->CameraComponent->bConstrainAspectRatio = false;
-	FPCamera = World->SpawnActor<ACameraActor>(FActorSpawnParameters());
-	FPCamera->AttachRootComponentTo(FPSpringArm);
-	FPCamera->CameraComponent->bConstrainAspectRatio = false;
-	FPCamera->CameraComponent->AddRelativeRotation(FRotator(0, 180, 0));
+void ATB_Character::PostInitProperties()
+{
+	Super::PostInitProperties();
+
+	/* Use blueprint class name if no other is given */
+	if (SpeciesName.IsEmpty())
+	{
+		SpeciesName = FText::FromString(StaticClass()->GetName());
+	}
+
+	if (NameClass)
+	{
+		CharacterName = ConstructObject<UTB_Name>(NameClass, this);
+		CharacterName->Generate(Gender);
+	}
+	else
+	{
+		/* fall back to a simple default name (the human, the robot, etc.) */
+		CharacterName = ConstructObject<UTB_Name>(UTB_Name::StaticClass(), this);
+		CharacterName->FirstName = FString::Printf(TEXT("the %s"), *SpeciesName.ToString().ToLower());
+	}
 }
 
 float ATB_Character::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
@@ -103,12 +117,12 @@ float ATB_Character::TakeDamage(float Damage, FDamageEvent const& DamageEvent, A
 
 	// add an entry to the log
 	GameState->GameLog->Log(ETB_LogCategory::VE_CharacterEvent, FString::Printf(TEXT("%s hits %s"),
-		*((ATB_Character *)DamageCauser)->CharacterName.ToString(),
-		*CharacterName.ToString()));
+		*((ATB_Character *)DamageCauser)->CharacterName->ToString(),
+		*CharacterName->ToString()));
 	// ...and another one if we are dead
 	if (HitPoints <= 0)
 	{
-		GameState->GameLog->Log(ETB_LogCategory::VE_CharacterEvent, FString::Printf(TEXT("%s is killed!"), *CharacterName.ToString()));
+		GameState->GameLog->Log(ETB_LogCategory::VE_CharacterEvent, FString::Printf(TEXT("%s is killed!"), *CharacterName->ToString()));
 	}
 
 	return Damage;
