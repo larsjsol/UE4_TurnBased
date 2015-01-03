@@ -128,18 +128,19 @@ float ATB_Character::TakeDamage(float Damage, FDamageEvent const& DamageEvent, A
 	return Damage;
 }
 
-void ATB_Character::PrepareForNextTurn_Implementation()
+void ATB_Character::OnBeginTurn_Implementation()
+{
+
+}
+
+void ATB_Character::OnEndTurn_Implementation()
 {
 	ActionPoints = MaxActionPoints;
 }
 
-void ATB_Character::PrepareForThisTurn_Implementation()
+void ATB_Character::OnSelected_Implementation()
 {
-	//See if we can target an enemy
-	if (!EnemyTarget)
-	{
-		TargetNextEnemy();
-	}
+
 }
 
 bool ATB_Character::IsBusy_Implementation()
@@ -266,6 +267,7 @@ int32 ATB_Character::HitChance_Implementation()
 		
 		ToHit = RangedAttackSkill;
 		ToHit += Weapon->HitModifier(Range);
+		ToHit += CoverModifier(EnemyTarget);
 	}
 
 	return ToHit;
@@ -284,4 +286,58 @@ int32 ATB_Character::Damage_Implementation()
 	}
 
 	return Damage;
+}
+
+void ATB_Character::GetHitLocations_Implementation(TArray<FVector> &WorldLocations)
+{
+	WorldLocations.Empty();
+
+	TArray<FName> SocketNames = Mesh->GetAllSocketNames();
+	for (auto Name : SocketNames)
+	{
+		FVector Location;
+		FRotator Rotation;
+		
+		Mesh->GetSocketWorldLocationAndRotation(Name, Location, Rotation);
+		WorldLocations.Add(Location);
+	}
+}
+
+int32 ATB_Character::CoverModifier_Implementation(ATB_Character *Target)
+{
+	UWorld *World = GetWorld();
+	
+	// Ignore collisions with the aiming character and its weapon
+	FCollisionQueryParams Params;
+	Params.AddIgnoredActor(this);
+	if (Weapon)
+	{
+		Params.AddIgnoredActor(Weapon);
+	}
+
+	// uncomment to draw debug lines
+	/*
+	FName TraceTag("CoverTrace");
+	World->DebugDrawTraceTag = TraceTag;
+	Params.TraceTag = TraceTag;
+	*/
+
+	FCollisionObjectQueryParams ObjectParams;
+	FHitResult HitResult;
+
+	TArray<FVector> HitLocations;
+	Target->GetHitLocations(HitLocations);
+	FVector StartLocation = FPCamera->CameraComponent->GetComponentLocation();
+
+	int Hidden = 0;
+	for (auto HitLocation : HitLocations)
+	{
+		World->LineTraceSingle(HitResult, StartLocation, HitLocation, Params, ObjectParams);
+		if (Target->GetUniqueID() != HitResult.Actor->GetUniqueID())
+		{
+			Hidden++;
+		}
+	}
+
+	return (Hidden * -100) / std::max(HitLocations.Num(), 1);
 }

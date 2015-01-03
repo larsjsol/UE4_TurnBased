@@ -51,18 +51,18 @@ public:
 	float Movement = 1000;
 
 	/* Skills */
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Game")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Base Abilities")
 	int32 RangedAttackSkill = 50;
 
 	/* Overhead and FP camera */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Default")
-	USpringArmComponent *OverheadSpringArm;
+	USpringArmComponent *OverheadSpringArm = NULL;
 	UPROPERTY(BlueprintReadWrite, Category = "Default")
-	ACameraActor *OverheadCamera;
+	ACameraActor *OverheadCamera = NULL;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Default")
-	USpringArmComponent *FPSpringArm;
+	USpringArmComponent *FPSpringArm = NULL;
 	UPROPERTY(BlueprintReadWrite, Category = "Default")
-	ACameraActor *FPCamera;
+	ACameraActor *FPCamera = NULL;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Flavour")
 	UTB_Name *CharacterName = NULL;
@@ -92,11 +92,15 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Flavour")
 	ETB_Gender Gender = ETB_Gender::VE_None;
 
-	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "Game ")
-	void PrepareForNextTurn();
-
-	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "Game")
-	void PrepareForThisTurn();
+	/* Called right before the turn starts */
+	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "Events")
+	void OnBeginTurn();
+	/* Called when the turn ends */
+	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "Events")
+	void OnEndTurn();
+	/* Called when the turn ends */
+	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "Events")
+	void OnSelected();
 
 	//Is the character performing an action right now?
 	UFUNCTION(BluePrintNativeEvent, BlueprintPure, Category = "Game")
@@ -142,6 +146,21 @@ public:
 	/* Expected damage dealt after all modifiers */
 	UFUNCTION(BluePrintNativeEvent, BlueprintPure, Category = "Game")
 	int32 Damage();
+
+	/* 
+	Get a list of locations that is suitable for determening line-of-sight
+	and cover for this character.
+
+	Default behavior is to return the position of all sockets
+	*/
+	UFUNCTION(BluePrintNativeEvent, BlueprintPure, Category = "Vision")
+	void GetHitLocations(TArray<FVector> &WorldLocations);
+
+	/*
+	Get aim penalty from target cover (-100 full cover, 0 - completely in the open)
+	*/
+	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "Vision")
+	int32 CoverModifier(ATB_Character *Target);
 
 private:
 	bool Busy = false;

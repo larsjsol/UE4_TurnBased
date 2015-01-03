@@ -55,11 +55,11 @@ public:
 	ATB_Weapon *Weapon = NULL;
 
 	UPROPERTY(BlueprintReadWrite, Category = "Animation Input")
-	float Speed;
+	float Speed = 0;
 	UPROPERTY(BlueprintReadWrite, Category = "Animation Input")
-	float Direction;
+	float Direction = 0;
 	UPROPERTY(BlueprintReadWrite, Category = "Animation Input")
-	bool Alive;
+	bool Alive = true;
 
 	UPROPERTY(BlueprintReadWrite, Category = "Animation Input")
 	ETB_WeaponAnimType WeaponAnimType;
