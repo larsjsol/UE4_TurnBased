@@ -14,6 +14,7 @@
 class ATB_TeamController;
 class UTB_AnimInstance;
 class UTB_Name;
+class UTB_AimComponent;
 
 UENUM(BlueprintType)
 enum class ETB_Gender : uint8
@@ -64,6 +65,9 @@ public:
 	UPROPERTY(BlueprintReadWrite, Category = "Default")
 	ACameraActor *FPCamera = NULL;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Default")
+	UTB_AimComponent *AimComponent = NULL;
+
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Flavour")
 	UTB_Name *CharacterName = NULL;
 
@@ -81,10 +85,6 @@ public:
 
 	UPROPERTY(BlueprintReadOnly, Category = "Equipment")
 	UTB_AnimInstance *AnimInstance = NULL;
-
-	/* Which enemy is targeted */
-	UPROPERTY(BlueprintReadWrite, Category = "Game")
-	ATB_Character *EnemyTarget = NULL;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Flavour")
 	UClass *NameClass = NULL;
@@ -137,15 +137,10 @@ public:
 	void LookAt(AActor *Target);
 
 	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "Game")
+	void TargetEnemy();
+
+	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "Game")
 	void TargetNextEnemy();
-
-	/* Hit chance after applying all modifiers */
-	UFUNCTION(BluePrintNativeEvent, BlueprintPure, Category = "Game")
-	int32 HitChance();
-
-	/* Expected damage dealt after all modifiers */
-	UFUNCTION(BluePrintNativeEvent, BlueprintPure, Category = "Game")
-	int32 Damage();
 
 	/* 
 	Get a list of locations that is suitable for determening line-of-sight
@@ -155,12 +150,6 @@ public:
 	*/
 	UFUNCTION(BluePrintNativeEvent, BlueprintPure, Category = "Vision")
 	void GetHitLocations(TArray<FVector> &WorldLocations);
-
-	/*
-	Get aim penalty from target cover (-100 full cover, 0 - completely in the open)
-	*/
-	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "Vision")
-	int32 CoverModifier(ATB_Character *Target);
 
 private:
 	bool Busy = false;

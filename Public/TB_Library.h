@@ -20,6 +20,7 @@ public:
 	*/
 	UFUNCTION(BlueprintPure, Category = "Formatting")
 	static void IntAsModifierText(int32 Integer, FText &FormattedText);
-	
+	UFUNCTION(BlueprintPure, Category = "Formatting")
+	static void FloatAsModifierText(float Float, FText &FormattedText);
 	
 };

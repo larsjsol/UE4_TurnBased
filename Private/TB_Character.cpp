@@ -6,6 +6,7 @@
 #include "TB_Weapon.h"
 #include "TB_AnimInstance.h"
 #include "TB_Name.h"
+#include "TB_AimComponent.h"
 
 #include "AIController.h"
 #include "AI/Navigation/NavigationPath.h"
@@ -36,9 +37,12 @@ ATB_Character::ATB_Character(const FObjectInitializer& ObjectInitializer)
 	/* Somewhat sane defaults */
 	FPSpringArm->RelativeLocation.Z = 170;
 	FPSpringArm->RelativeRotation.Yaw = -90;
-	FPSpringArm->TargetArmLength = 75;
+	FPSpringArm->TargetArmLength = 25;
 	FPSpringArm->CameraLagSpeed = 10;
 	FPSpringArm->CameraRotationLagSpeed = 10;
+
+	AimComponent = ObjectInitializer.CreateAbstractDefaultSubobject<UTB_AimComponent>(this, TEXT("Aim Component"));
+	AimComponent->AttachParent = FPSpringArm;
 }
 
 void ATB_Character::BeginPlay()
@@ -130,7 +134,6 @@ float ATB_Character::TakeDamage(float Damage, FDamageEvent const& DamageEvent, A
 
 void ATB_Character::OnBeginTurn_Implementation()
 {
-
 }
 
 void ATB_Character::OnEndTurn_Implementation()
@@ -178,7 +181,7 @@ void ATB_Character::Reload_Implementation()
 
 void ATB_Character::InitiateAttack_Implementation()
 {
-	if (Weapon && EnemyTarget && ActionPoints > 0)
+	if (Weapon && AimComponent->EnemyTarget && ActionPoints > 0)
 	{
 		float AttackTime = AnimInstance->PlayAnimation(AnimInstance->GetAttackAnim());
 		float WeaponAttackTime = Weapon->Attack();
@@ -188,11 +191,11 @@ void ATB_Character::InitiateAttack_Implementation()
 
 void ATB_Character::Attack_Implementation()
 {
-	if (Weapon && EnemyTarget && ActionPoints > 0)
+	if (Weapon && AimComponent->EnemyTarget && ActionPoints > 0)
 	{
-		if (HitChance() > FGenericPlatformMath::Rand() % 100)
+		if (AimComponent->FinalHitChance > FGenericPlatformMath::Rand() % 100)
 		{
-			EnemyTarget->TakeDamage((float) Damage(), FDamageEvent(), TeamController, this);
+			AimComponent->EnemyTarget->TakeDamage(AimComponent->FinalDamage, FDamageEvent(), TeamController, this);
 		}
 		ActionPoints--;
 	}
@@ -220,6 +223,8 @@ void ATB_Character::MoveTo_Implementation(FVector Destination)
 
 	auto *aic = (AAIController*) Controller;
 	aic->MoveToLocation(Destination, 0.05, false);
+	
+	ClearBusy();
 }
 
 void ATB_Character::LookAt_Implementation(AActor *Target)
@@ -237,55 +242,27 @@ void ATB_Character::LookAt_Implementation(AActor *Target)
 	SetActorTransform(Transform);
 }
 
+void ATB_Character::TargetEnemy_Implementation()
+{
+	AimComponent->UpdateVisibleEnemies();
+	if (!AimComponent->EnemyTarget)
+	{
+		TargetNextEnemy();
+	}
+	else
+	{
+		AimComponent->UpdateValues();
+	}
+}
+
 void ATB_Character::TargetNextEnemy_Implementation()
 {
-	TArray<ATB_Character*> KnownEnemies;
-	int32 Idx;
-	TeamController->GetKnownEnemies(KnownEnemies);
-	KnownEnemies.Find(EnemyTarget, Idx);
-	
-	if (KnownEnemies.Num())
+	AimComponent->TargetNextEnemy();
+	if (AimComponent->EnemyTarget)
 	{
-		Idx++;
-		Idx = Idx % KnownEnemies.Num();
-		EnemyTarget = KnownEnemies[Idx];
-
-		if (EnemyTarget)
-		{
-			LookAt(EnemyTarget);
-		}
+		LookAt(AimComponent->EnemyTarget);
 	}
-}
-
-int32 ATB_Character::HitChance_Implementation()
-{
-	int32 ToHit = 0;
-
-	if (Weapon && EnemyTarget)
-	{
-		float Range = GetDistanceTo(EnemyTarget);
-		
-		ToHit = RangedAttackSkill;
-		ToHit += Weapon->HitModifier(Range);
-		ToHit += CoverModifier(EnemyTarget);
-	}
-
-	return ToHit;
-}
-
-int32 ATB_Character::Damage_Implementation()
-{
-	int32 Damage = 0;
-
-	if (Weapon && EnemyTarget)
-	{
-		float Range = GetDistanceTo(EnemyTarget);
-
-		Damage = Weapon->BaseDamage;
-		Damage += Weapon->DamageModifier(Range);
-	}
-
-	return Damage;
+	AimComponent->UpdateValues();
 }
 
 void ATB_Character::GetHitLocations_Implementation(TArray<FVector> &WorldLocations)
@@ -303,41 +280,3 @@ void ATB_Character::GetHitLocations_Implementation(TArray<FVector> &WorldLocatio
 	}
 }
 
-int32 ATB_Character::CoverModifier_Implementation(ATB_Character *Target)
-{
-	UWorld *World = GetWorld();
-	
-	// Ignore collisions with the aiming character and its weapon
-	FCollisionQueryParams Params;
-	Params.AddIgnoredActor(this);
-	if (Weapon)
-	{
-		Params.AddIgnoredActor(Weapon);
-	}
-
-	// uncomment to draw debug lines
-	/*
-	FName TraceTag("CoverTrace");
-	World->DebugDrawTraceTag = TraceTag;
-	Params.TraceTag = TraceTag;
-	*/
-
-	FCollisionObjectQueryParams ObjectParams;
-	FHitResult HitResult;
-
-	TArray<FVector> HitLocations;
-	Target->GetHitLocations(HitLocations);
-	FVector StartLocation = FPCamera->CameraComponent->GetComponentLocation();
-
-	int Hidden = 0;
-	for (auto HitLocation : HitLocations)
-	{
-		World->LineTraceSingle(HitResult, StartLocation, HitLocation, Params, ObjectParams);
-		if (Target->GetUniqueID() != HitResult.Actor->GetUniqueID())
-		{
-			Hidden++;
-		}
-	}
-
-	return (Hidden * -100) / std::max(HitLocations.Num(), 1);
-}

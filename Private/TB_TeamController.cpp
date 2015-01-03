@@ -92,6 +92,7 @@ void ATB_TeamController::ActivateNextCharacterThatCanAct_Implementation()
 		if (Characters[CurrentCharacterId]->HitPoints > 0 && 
 			Characters[CurrentCharacterId]->ActionPoints > 0)
 		{
+			Characters[CurrentCharacterId]->OnSelected();
 			break;
 		}
 		ActivateNextCharacter();
