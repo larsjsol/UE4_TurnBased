@@ -22,6 +22,9 @@ public:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Game")
 	void PlayTurn();
 
+	UFUNCTION(BlueprintCallable, Category = "Game")
+	void CharacterPlayTurn();
+
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Game")
 	void EndTurn();
 
@@ -59,6 +62,9 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, Category = "Game")
 	FName TeamName;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Game")
+	bool MyTurn = false;
 
 private:
 	UPROPERTY()

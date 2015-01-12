@@ -92,6 +92,9 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Flavour")
 	ETB_Gender Gender = ETB_Gender::VE_None;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Game")
+	bool HumanControlled = false;
+
 	/* Called right before the turn starts */
 	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "Events")
 	void OnBeginTurn();
@@ -108,8 +111,8 @@ public:
 
 	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "Game")
 	void SetBusy(float BusyDuration);
-
-	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "Game")
+	/* Called when an action is finished, might call PlayTurn() */
+	UFUNCTION(BlueprintCallable, Category = "Game")
 	void ClearBusy();
 
 	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "Game")
@@ -150,6 +153,10 @@ public:
 	*/
 	UFUNCTION(BluePrintNativeEvent, BlueprintPure, Category = "Vision")
 	void GetHitLocations(TArray<FVector> &WorldLocations);
+
+	/* Play a single turn using the AI */
+	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "Game")
+	void PlayTurn();
 
 private:
 	bool Busy = false;

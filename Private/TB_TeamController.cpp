@@ -3,6 +3,7 @@
 #include "UE4_TurnBased.h"
 #include "TB_TeamController.h"
 #include "TB_GameState.h"
+#include "TB_Name.h"
 
 
 ATB_TeamController::ATB_TeamController(const FObjectInitializer& ObjectInitializer)
@@ -38,14 +39,32 @@ void ATB_TeamController::PlayTurn_Implementation()
 	ATB_GameState* GameState = (ATB_GameState *)world->GameState;
 	GameState->GameLog->Log(ETB_LogCategory::VE_TurnClock, FString::Printf(TEXT("Starting turn %d for %s"), GameState->Turn, *TeamName.ToString()));
 
+	MyTurn = true;
+
 	for (auto *c : Characters)
 	{
 		c->OnBeginTurn();
 	}
 
-	// Just end the turn if we are not controlled by a human
-	if (!PlayerController) {
-		EndTurn_Implementation();
+
+	if (!PlayerController)
+	{
+		CharacterPlayTurn();
+	}
+}
+
+void ATB_TeamController::CharacterPlayTurn()
+{
+	int32 PrevId = CurrentCharacterId;
+	ActivateNextCharacterThatCanAct();
+
+	if (CurrentCharacterId != PrevId && GetActiveCharacter())
+	{
+		GetActiveCharacter()->PlayTurn();
+	}
+	else
+	{
+		EndTurn();
 	}
 }
 
@@ -55,6 +74,7 @@ void ATB_TeamController::EndTurn_Implementation()
 	{
 		c->OnEndTurn();
 	}
+	MyTurn = false;
 
 	UWorld* world = GetWorld();
 	ATB_GameState* gamestate = (ATB_GameState *) world->GameState;
@@ -112,6 +132,10 @@ ATB_Character* ATB_TeamController::GetActiveCharacter_Implementation()
 
 void ATB_TeamController::RegisterCharacter_Implementation(ATB_Character* NewCharacter)
 {
+	if (PlayerController) {
+		NewCharacter->HumanControlled = true;
+	}
+
 	Characters.Push(NewCharacter);
 }
 

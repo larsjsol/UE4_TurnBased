@@ -7,6 +7,7 @@
 #include "TB_AnimInstance.h"
 #include "TB_Name.h"
 #include "TB_AimComponent.h"
+#include "TB_AIController.h"
 
 #include "AIController.h"
 #include "AI/Navigation/NavigationPath.h"
@@ -17,7 +18,7 @@
 ATB_Character::ATB_Character(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
-	AIControllerClass = AAIController::StaticClass();
+	AIControllerClass = ATB_AIController::StaticClass();
 	NameClass = UTB_Name::StaticClass();
 
 	/* set up the overhead spring arm, the camera is spawned in BeginPlay()  */
@@ -116,7 +117,6 @@ float ATB_Character::TakeDamage(float Damage, FDamageEvent const& DamageEvent, A
 	if (HitPoints > 0)
 	{
 		float Time = AnimInstance->PlayAnimation(AnimInstance->GetHurtAnim());
-		SetBusy(Time);
 	}
 
 	// add an entry to the log
@@ -158,9 +158,15 @@ void ATB_Character::SetBusy_Implementation(float BusyDuration)
 	GetWorldTimerManager().SetTimer(this, &ATB_Character::ClearBusy, BusyDuration, false);
 }
 
-void ATB_Character::ClearBusy_Implementation()
+void ATB_Character::ClearBusy()
 {
 	Busy = false;
+
+	// Give the AIController a chance to do something
+	if (!HumanControlled)
+	{
+		PlayTurn();
+	}
 }
 
 void ATB_Character::Reload_Implementation()
@@ -277,6 +283,20 @@ void ATB_Character::GetHitLocations_Implementation(TArray<FVector> &WorldLocatio
 		
 		Mesh->GetSocketWorldLocationAndRotation(Name, Location, Rotation);
 		WorldLocations.Add(Location);
+	}
+}
+
+void ATB_Character::PlayTurn_Implementation()
+{
+	ATB_AIController *Controller = (ATB_AIController *) GetController();
+
+	if (ActionPoints > 0)
+	{
+		Controller->DoSingleAction();
+	}
+	else
+	{
+		TeamController->CharacterPlayTurn();
 	}
 }
 
