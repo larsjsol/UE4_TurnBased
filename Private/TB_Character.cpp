@@ -230,8 +230,7 @@ void ATB_Character::MoveTo_Implementation(FVector Destination)
 
 	auto *aic = (AAIController*) Controller;
 	aic->MoveToLocation(Destination, 0.05, false);
-	
-	ClearBusy();
+	SetBusy(Movement / CharacterMovement->MaxWalkSpeed);
 }
 
 void ATB_Character::LookAt_Implementation(AActor *Target)
