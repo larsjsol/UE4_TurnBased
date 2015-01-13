@@ -13,6 +13,11 @@ ATB_Weapon::ATB_Weapon(const FObjectInitializer& ObjectInitializer)
 	StaticMeshComponent->AttachParent = RootComponent;
 	SkeletalMeshComponent = ObjectInitializer.CreateAbstractDefaultSubobject<USkeletalMeshComponent>(this, TEXT("SkeletalMesh"));
 	SkeletalMeshComponent->AttachParent = RootComponent;
+
+	if (WeaponFXClass)
+	{
+		WeaponFX = NewObject<UTB_WeaponFX>(this, WeaponFXClass->StaticClass());
+	}
 }
 
 void ATB_Weapon::BeginPlay()

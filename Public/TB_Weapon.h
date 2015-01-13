@@ -6,6 +6,7 @@
 #include "TB_Weapon.generated.h"
 
 class ATB_Character;
+class UTB_WeaponFX;
 
 /**
  * 
@@ -79,6 +80,11 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Animation")
 	FTB_WeaponAnimSet AnimSet;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Effects")
+	UClass *WeaponFXClass = NULL;
+	UPROPERTY(BlueprintReadOnly, Category = "Effects")
+	UTB_WeaponFX *WeaponFX = NULL;
 
 	UFUNCTION(BluePrintNativeEvent, BlueprintPure, Category = "Game Rules")
 	int32 HitModifier(float range);
