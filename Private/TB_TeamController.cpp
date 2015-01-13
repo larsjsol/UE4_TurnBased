@@ -61,15 +61,17 @@ void ATB_TeamController::CharacterPlayTurn()
 	int32 PrevId = CurrentCharacterId;
 	ActivateNextCharacterThatCanAct();
 
-	if (CurrentCharacterId != PrevId && GetActiveCharacter())
+
+	ATB_Character *Character = GetActiveCharacter();
+	if (Character && Character->ActionPoints && Character->HitPoints)
 	{
 		if (PlayerController) {
-			GetActiveCharacter()->PlayTurn();
+			Character->PlayTurn();
 		}
 		else
 		{
 			//this will in call PlayTurn() after the timeout
-			GetActiveCharacter()->SetBusy(0.5);
+			Character->SetBusy(0.1);
 		}
 	
 	}

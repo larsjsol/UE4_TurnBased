@@ -155,6 +155,10 @@ bool ATB_Character::IsBusy_Implementation()
 void ATB_Character::SetBusy_Implementation(float BusyDuration)
 {
 	Busy = true;
+	if (!HumanControlled)
+	{
+		BusyDuration += 2; // so the player can see whats going on
+	}
 	GetWorldTimerManager().SetTimer(this, &ATB_Character::ClearBusy, BusyDuration, false);
 }
 
