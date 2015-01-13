@@ -101,9 +101,9 @@ public:
 	/* Called when the turn ends */
 	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "Events")
 	void OnEndTurn();
-	/* Called when the turn ends */
+	/* Called when the team controller activates this character */
 	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "Events")
-	void OnSelected();
+	void OnActivation();
 
 	//Is the character performing an action right now?
 	UFUNCTION(BluePrintNativeEvent, BlueprintPure, Category = "Game")

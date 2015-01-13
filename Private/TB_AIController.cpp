@@ -17,7 +17,7 @@ void ATB_AIController::DoSingleAction_Implementation()
 		return;
 	}
 	
-	// if not, fire at the enemy we're most likely to hit
+	// if not, fire at an enemy
 	Pawn->TargetEnemy();
 	if (Pawn->AimComponent->EnemyTarget)
 	{
@@ -27,6 +27,7 @@ void ATB_AIController::DoSingleAction_Implementation()
 
 	// waste an AP if we do not can't do anything
 	Pawn->ActionPoints--;
+	Pawn->ClearBusy();
 }
 
 

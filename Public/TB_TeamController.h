@@ -28,8 +28,9 @@ public:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Game")
 	void EndTurn();
 
+	/* Get the next character in the team, does not call OnActivation()*/
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Team Members")
-	void ActivateNextCharacter();
+	void NextCharacter();
 
 	/* Select the next living character, no effect if everyone is dead */
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Team Members")

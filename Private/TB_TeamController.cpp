@@ -47,10 +47,8 @@ void ATB_TeamController::PlayTurn_Implementation()
 	}
 
 
-	if (!PlayerController)
-	{
-		CharacterPlayTurn();
-	}
+	// will call itself for all characters that can act
+	CharacterPlayTurn();
 }
 
 void ATB_TeamController::CharacterPlayTurn()
@@ -81,7 +79,7 @@ void ATB_TeamController::EndTurn_Implementation()
 	gamestate->EndTurn();
 }
 
-void ATB_TeamController::ActivateNextCharacter_Implementation()
+void ATB_TeamController::NextCharacter_Implementation()
 {
 	if (Characters.Num() > 0)
 	{
@@ -92,30 +90,31 @@ void ATB_TeamController::ActivateNextCharacter_Implementation()
 void ATB_TeamController::ActivateNextLivingCharacter_Implementation()
 {
 	auto previd = CurrentCharacterId;
-	ActivateNextCharacter();
+	NextCharacter();
 	while (CurrentCharacterId != previd)
 	{
 		if (Characters[CurrentCharacterId]->HitPoints > 0)
 		{
+			Characters[CurrentCharacterId]->OnActivation();
 			break;
 		}
-		ActivateNextCharacter();
+		NextCharacter();
 	}
 }
 
 void ATB_TeamController::ActivateNextCharacterThatCanAct_Implementation()
 {
 	auto previd = CurrentCharacterId;
-	ActivateNextCharacter();
+	NextCharacter();
 	while (CurrentCharacterId != previd)
 	{
 		if (Characters[CurrentCharacterId]->HitPoints > 0 && 
 			Characters[CurrentCharacterId]->ActionPoints > 0)
 		{
-			Characters[CurrentCharacterId]->OnSelected();
+			Characters[CurrentCharacterId]->OnActivation();
 			break;
 		}
-		ActivateNextCharacter();
+		NextCharacter();
 	}
 }
 

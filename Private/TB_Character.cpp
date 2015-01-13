@@ -141,9 +141,9 @@ void ATB_Character::OnEndTurn_Implementation()
 	ActionPoints = MaxActionPoints;
 }
 
-void ATB_Character::OnSelected_Implementation()
+void ATB_Character::OnActivation_Implementation()
 {
-
+	;
 }
 
 bool ATB_Character::IsBusy_Implementation()
@@ -162,11 +162,8 @@ void ATB_Character::ClearBusy()
 {
 	Busy = false;
 
-	// Give the AIController a chance to do something
-	if (!HumanControlled)
-	{
-		PlayTurn();
-	}
+	// prod the character to do the next action
+	PlayTurn();
 }
 
 void ATB_Character::Reload_Implementation()
@@ -292,7 +289,10 @@ void ATB_Character::PlayTurn_Implementation()
 
 	if (ActionPoints > 0)
 	{
-		Controller->DoSingleAction();
+		if (!HumanControlled)
+		{
+			Controller->DoSingleAction();
+		}
 	}
 	else
 	{
