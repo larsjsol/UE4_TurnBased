@@ -9,6 +9,8 @@
 /**
  * 
  */
+class ATB_PlayerController;
+
 UCLASS(Blueprintable, BlueprintType)
 class UE4_TURNBASED_API ATB_TeamController : public AController
 {
@@ -59,7 +61,7 @@ public:
 	TArray<ATB_Character*> Characters;
 
 	UPROPERTY(BlueprintReadWrite, Category = "Game")
-	APlayerController* PlayerController = NULL;
+	ATB_PlayerController* PlayerController = NULL;
 
 	UPROPERTY(BlueprintReadWrite, Category = "Game")
 	FName TeamName;

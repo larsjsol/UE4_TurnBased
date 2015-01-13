@@ -4,6 +4,7 @@
 #include "TB_TeamController.h"
 #include "TB_GameState.h"
 #include "TB_Name.h"
+#include "TB_PlayerController.h"
 
 
 ATB_TeamController::ATB_TeamController(const FObjectInitializer& ObjectInitializer)
@@ -40,6 +41,10 @@ void ATB_TeamController::PlayTurn_Implementation()
 	GameState->GameLog->Log(ETB_LogCategory::VE_TurnClock, FString::Printf(TEXT("Starting turn %d for %s"), GameState->Turn, *TeamName.ToString()));
 
 	MyTurn = true;
+	if (PlayerController)
+	{
+		PlayerController->OnBeginTurn();
+	}
 
 	for (auto *c : Characters)
 	{
@@ -58,7 +63,15 @@ void ATB_TeamController::CharacterPlayTurn()
 
 	if (CurrentCharacterId != PrevId && GetActiveCharacter())
 	{
-		GetActiveCharacter()->PlayTurn();
+		if (PlayerController) {
+			GetActiveCharacter()->PlayTurn();
+		}
+		else
+		{
+			//this will in call PlayTurn() after the timeout
+			GetActiveCharacter()->SetBusy(0.5);
+		}
+	
 	}
 	else
 	{
@@ -73,6 +86,11 @@ void ATB_TeamController::EndTurn_Implementation()
 		c->OnEndTurn();
 	}
 	MyTurn = false;
+
+	if (PlayerController)
+	{
+		PlayerController->OnEndTurn();
+	}
 
 	UWorld* world = GetWorld();
 	ATB_GameState* gamestate = (ATB_GameState *) world->GameState;

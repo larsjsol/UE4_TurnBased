@@ -89,3 +89,13 @@ void ATB_PlayerController::CharacterTargetNextEnemy_Implementation()
 		Character->TargetNextEnemy();
 	}
 }
+
+void ATB_PlayerController::OnBeginTurn_Implementation()
+{
+
+}
+
+void ATB_PlayerController::OnEndTurn_Implementation()
+{
+
+}

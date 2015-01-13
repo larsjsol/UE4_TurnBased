@@ -47,6 +47,16 @@ public:
 	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "User Actions")
 	void CharacterTargetNextEnemy();
 
+	/* Events */
+
+	/* Fired when the TeamController stars a new turn */
+	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "Events")
+	void OnBeginTurn();
+
+	/* Fired when the TeamController ends a turn */
+	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "Events")
+	void OnEndTurn();
+
 private:
 	UPROPERTY()
 	ATB_GameState *GameState = NULL;
