@@ -198,13 +198,30 @@ void ATB_Character::InitiateAttack_Implementation()
 
 void ATB_Character::Attack_Implementation()
 {
+	FHitResult Impact;
+	bool HitSomething = false;
 	if (Weapon && AimComponent->EnemyTarget && ActionPoints > 0)
 	{
 		if (AimComponent->FinalHitChance > FGenericPlatformMath::Rand() % 100)
 		{
+			HitSomething = true;
+
+			AimComponent->HitLineTrace(Impact);
 			AimComponent->EnemyTarget->TakeDamage(AimComponent->FinalDamage, FDamageEvent(), TeamController, this);
 		}
+		else
+		{
+			if (AimComponent->MissLineTrace(Impact))
+			{
+				HitSomething = true;
+			}
+		}
 		ActionPoints--;
+
+		if (HitSomething)
+		{
+			Weapon->SpawnImpactEffects(Impact);
+		}
 	}
 }
 

@@ -18,5 +18,4 @@ public:
 	
 	UFUNCTION(BluePrintNativeEvent, BlueprintPure, Category = "Effects")
 	USoundCue *ImpactSoundCue(EPhysicalSurface SurfaceType);
-	
 };

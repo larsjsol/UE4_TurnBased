@@ -113,6 +113,10 @@ public:
 	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "Animation")
 	float Reload();
 
+	/* We've hit something. Spawn apropriate video and sound effects */
+	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "Effects")
+	void SpawnImpactEffects(const FHitResult &HitResult);
+
 private:
 	ATB_Character *EquippedBy = NULL;
 };

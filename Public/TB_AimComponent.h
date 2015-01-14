@@ -3,6 +3,7 @@
 #pragma once
 
 #include "Components/SceneComponent.h"
+#include "CollisionQueryParams.h"
 #include "TB_AimComponent.generated.h"
 
 class ATB_Weapon;
@@ -58,4 +59,18 @@ public:
 	void TargetNextEnemy();
 	UFUNCTION(BlueprintCallable, Category = "Aim")
 	void UpdateVisibleEnemies();
+
+	/* Do a line trace that hits the selected target */
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Aim")
+	void HitLineTrace(FHitResult &OutHit);
+	/* Do a line trace that misses the selected target, return true if something else is hit */
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Aim")
+	bool MissLineTrace(FHitResult &OutHit);
+
+	/* 
+	Sets convenient values in Params based on the selected target
+	
+	The compiler complains if I try to make this into a UFUNCTION()
+	*/
+	void InitCollisionQueryParams(FCollisionQueryParams &Params);
 };

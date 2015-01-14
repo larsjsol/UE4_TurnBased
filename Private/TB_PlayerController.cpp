@@ -33,7 +33,7 @@ bool ATB_PlayerController::LineTraceFromScreenPos(float ScreenX, float ScreenY, 
 	FVector Location;
 	FVector Direction;
 	if (DeprojectScreenPositionToWorld(ScreenX, ScreenY, Location, Direction)) {
-		float LineLength = 100000; // guess of what is not to long and not to short...
+		float LineLength = 100000; // guess a number that is not to big and not to small...
 		if (GetWorld()->LineTraceSingle(WorldHit, Location, Direction * LineLength, ECC_Visibility,
 			FCollisionQueryParams(), FCollisionResponseParams()))
 		{

@@ -2,6 +2,7 @@
 
 #include "UE4_TurnBased.h"
 #include "TB_Weapon.h"
+#include "TB_WeaponFX.h"
 #include "TB_Character.h"
 
 ATB_Weapon::ATB_Weapon(const FObjectInitializer& ObjectInitializer)
@@ -13,16 +14,16 @@ ATB_Weapon::ATB_Weapon(const FObjectInitializer& ObjectInitializer)
 	StaticMeshComponent->AttachParent = RootComponent;
 	SkeletalMeshComponent = ObjectInitializer.CreateAbstractDefaultSubobject<USkeletalMeshComponent>(this, TEXT("SkeletalMesh"));
 	SkeletalMeshComponent->AttachParent = RootComponent;
-
-	if (WeaponFXClass)
-	{
-		WeaponFX = NewObject<UTB_WeaponFX>(this, WeaponFXClass->StaticClass());
-	}
 }
 
 void ATB_Weapon::BeginPlay()
 {
 	Ammo = MaxAmmo;
+
+	if (WeaponFXClass)
+	{
+		WeaponFX = NewObject<UTB_WeaponFX>(this, WeaponFXClass);
+	}
 }
 
 void ATB_Weapon::Equip_Implementation(ATB_Character *EquippedBy)
@@ -69,6 +70,21 @@ float ATB_Weapon::Reload_Implementation()
 {
 	Ammo = MaxAmmo;
 	return PlayAnimation(AnimSet.Reload);
+}
+
+void ATB_Weapon::SpawnImpactEffects_Implementation(const FHitResult &HitResult)
+{	
+	if (WeaponFX)
+	{
+		if (HitResult.PhysMaterial.IsValid()) {
+			EPhysicalSurface Surface = HitResult.PhysMaterial->SurfaceType;
+			UE_LOG(TB_Log, Error, TEXT("PhysMaterial: %s"), *HitResult.PhysMaterial->StaticClass()->GetName());
+			UE_LOG(TB_Log, Error, TEXT("SurfaceType: %i"), (int) Surface);
+
+			USoundCue *SoundCue = WeaponFX->ImpactSoundCue(Surface);
+			UGameplayStatics::PlaySoundAtLocation(this, SoundCue, HitResult.ImpactPoint);
+		}
+	}
 }
 
 

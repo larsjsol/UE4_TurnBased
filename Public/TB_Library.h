@@ -23,4 +23,17 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Formatting")
 	static void FloatAsModifierText(float Float, FText &FormattedText);
 	
+	template <typename T>
+	static void Shuffle(TArray<T> &Array);
 };
+
+
+// Template member functions should be put in the header file
+template <typename T>
+void UTB_Library::Shuffle(TArray<T> &Array)
+{
+	// https://answers.unrealengine.com/questions/58340/how-to-shuffle-a-tarray.html
+	Array.Sort([](T Item1, T Item2) {
+		return FMath::FRand() < 0.5f;
+	});
+}

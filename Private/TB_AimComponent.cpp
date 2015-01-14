@@ -4,8 +4,10 @@
 #include "TB_AimComponent.h"
 #include "TB_Character.h"
 #include "TB_Weapon.h"
+#include "TB_Library.h"
 
 #include <algorithm>
+#include <cmath>
 
 void UTB_AimComponent::UpdateValues()
 {
@@ -125,5 +127,119 @@ void UTB_AimComponent::UpdateVisibleEnemies()
 	if (!EnemyTargetVisible)
 	{
 		EnemyTarget = NULL;
+	}
+}
+
+void UTB_AimComponent::HitLineTrace(FHitResult &OutHit)
+{
+	if (!EnemyTarget)
+	{
+		UE_LOG(TB_Log, Error, TEXT("HitLineTrace(): EnemyTarget == NULL"));
+		return;
+	}
+
+	//find the hit locations
+	TArray<FVector> HitLocations;
+	EnemyTarget->GetHitLocations(HitLocations);
+
+	// shuffle them and do line traces until we get a hit
+	UTB_Library::Shuffle(HitLocations);
+
+	FCollisionQueryParams Params;
+	InitCollisionQueryParams(Params);
+	FCollisionObjectQueryParams ObjectParams;
+	FVector StartLocation = GetComponentLocation();
+	
+	for (auto HitLocation : HitLocations)
+	{
+		bool HitSomething = World->LineTraceSingle(OutHit, StartLocation, HitLocation, Params, ObjectParams);
+		if (HitSomething && EnemyTarget->GetUniqueID() == OutHit.Actor->GetUniqueID())
+		{
+			return;
+		}
+	}
+	UE_LOG(TB_Log, Error, TEXT("HitLineTrace(): Could not find a hitting line trace"));
+}
+
+bool UTB_AimComponent::MissLineTrace(FHitResult &OutHit)
+{
+	if (!EnemyTarget)
+	{
+		UE_LOG(TB_Log, Error, TEXT("MissLineTrace(): EnemyTarget == NULL"));
+		return false;
+	}
+
+	//Pick a HitLocation at random
+	TArray<FVector> HitLocations;
+	EnemyTarget->GetHitLocations(HitLocations);
+	UTB_Library::Shuffle(HitLocations);
+
+	FCollisionQueryParams Params;
+	InitCollisionQueryParams(Params);
+	FCollisionObjectQueryParams ObjectParams;
+	FVector StartLocation = GetComponentLocation();
+
+	float Offset = 30;
+
+	for (auto HitLocation : HitLocations)
+	{
+		bool HitSomething = World->LineTraceSingle(OutHit, StartLocation, HitLocation, Params, ObjectParams);
+		if (HitSomething)
+		{
+			if (EnemyTarget->GetUniqueID() != OutHit.Actor->GetUniqueID())
+			{
+				//we've hit something we didn't aim for \o/
+				return true;
+			}
+			else
+			{
+				//get our direction and rotate it so we miss by Offest UUs
+				FVector Direction;
+				float Length;
+				(StartLocation - HitLocation).ToDirectionAndLength(Direction, Length);
+				float OffsetRad = atan2f(Offset, Length);
+				FRotator Rotator(0, OffsetRad * 180 / PI, 0);
+				if (FMath::FRand() < 0.5f)
+				{
+					Rotator *= -1;
+				}
+				FVector AdjustedDirection = Rotator.RotateVector(Direction);
+				//use the weapon range as length
+				AdjustedDirection *= Weapon->MaxRange;
+				//ensure that we dont hit the target
+				HitSomething = World->LineTraceSingle(OutHit, StartLocation, StartLocation + AdjustedDirection, Params, ObjectParams);
+				if (HitSomething && EnemyTarget->GetUniqueID() != OutHit.Actor->GetUniqueID())
+				{
+					//we're still hitting the target, pray that we'll miss it when we look at the other targetpoints
+					continue;
+				}
+				else
+				{
+					return HitSomething;
+				}
+
+			}
+		}
+	}
+
+	UE_LOG(TB_Log, Warning, TEXT("MissLineTrace(): Can't find a way to miss"));
+	return false;
+}
+void UTB_AimComponent::InitCollisionQueryParams(FCollisionQueryParams &Params)
+{
+	// remember to set the physical material in phat for skeletal meshes
+	// (the collision channels for the character might also need to be tuned)
+	Params.bTraceComplex = true; 
+	Params.bReturnPhysicalMaterial = true;
+
+	// Ignore collisions with the aiming character and its weapon
+	Params.AddIgnoredActor(Character);
+	if (Weapon)
+	{
+		Params.AddIgnoredActor(Weapon);
+	}
+	if (EnemyTarget->Weapon)
+	{
+		Params.AddIgnoredActor(EnemyTarget->Weapon);
 	}
 }
