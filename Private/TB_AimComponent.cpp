@@ -215,7 +215,6 @@ bool UTB_AimComponent::MissLineTrace(FHitResult &OutHit)
 				FVector TraceVector = HitLocation - StartLocation;
 				TraceVector.Normalize();
 				TraceVector *= Weapon->MaxRange;
-				UE_LOG(TB_Log, Warning, TEXT("MissLineTrace(): TraceVector.Size() == %f"), TraceVector.Size());
 
 				// Rotate it by 0-5 deg in all directions
 				FRotator Offset(FMath::FRand() * 1000, FMath::FRand() * 1000, 0);
