@@ -16,18 +16,28 @@ void UTB_AimComponent::UpdateValues()
 
 	if (EnemyTarget && Weapon)
 	{
+		// Base Values
 		FinalHitChance = Character->RangedAttackSkill;
 		FinalDamage = Weapon->BaseDamage;
-		
+
+		// Range
 		RangeToTarget = Character->GetDistanceTo(EnemyTarget);
 		RangeHitModifier = Weapon->HitModifier(RangeToTarget);
 		FinalHitChance += RangeHitModifier;
 		RangeDamageModifier = Weapon->DamageModifier(RangeToTarget);
 		FinalDamage += RangeDamageModifier;
 
+		// Cover
 		CoverHitModifier = CoverModifier(EnemyTarget);
 		FinalHitChance += CoverHitModifier;
-		CoverDamageModifier = 0; 
+		CoverDamageModifier = 0;
+
+		// Final sanity check
+		FinalHitChance = std::max(0, FinalHitChance);
+		if (FinalDamage < 0)
+		{
+			FinalDamage = 0;
+		}
 	}
 	else
 	{
@@ -83,6 +93,12 @@ int32 UTB_AimComponent::CoverModifier(ATB_Character *Target)
 		}
 	}
 
+	if (Hidden < HitLocations.Num())
+	{
+		// reduce cover by half if we can see the enemy at all
+		// a penalty above 60 makes an enemy virtually impossible to hit
+		Hidden -= (Hidden / 3);
+	}
 	return (Hidden * -100) / std::max(HitLocations.Num(), 1);
 }
 
