@@ -200,24 +200,21 @@ void ATB_Character::InitiateAttack_Implementation()
 void ATB_Character::Attack_Implementation()
 {
 	FHitResult Impact;
-	bool HitSomething = false;
-	if (Weapon && AimComponent->EnemyTarget && ActionPoints > 0)
-	{
-		if (AimComponent->FinalHitChance > FGenericPlatformMath::Rand() % 100)
-		{
-			HitSomething = true;
-			AimComponent->HitLineTrace(Impact);
-		}
-		else
-		{
-			HitSomething = AimComponent->MissLineTrace(Impact);
-		}
+	bool HitSomething = true;
 
-		if (HitSomething)
-		{
-			Impact.Actor->TakeDamage(AimComponent->FinalDamage, FDamageEvent(), TeamController, this);
-			Weapon->SpawnImpactEffects(Impact);
-		}
+	if (AimComponent->FinalHitChance > FGenericPlatformMath::Rand() % 100)
+	{
+		AimComponent->HitLineTrace(Impact);
+	}
+	else
+	{
+		HitSomething = AimComponent->MissLineTrace(Impact);
+	}
+
+	if (HitSomething)
+	{
+		Impact.Actor->TakeDamage(AimComponent->FinalDamage, FDamageEvent(), TeamController, this);
+		Weapon->SpawnImpactEffects(Impact);
 	}
 }
 
