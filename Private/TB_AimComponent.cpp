@@ -217,15 +217,7 @@ bool UTB_AimComponent::MissLineTrace(FHitResult &OutHit)
 				TraceVector *= Weapon->MaxRange;
 
 				// Rotate it by 0-5 deg in all directions
-				FRotator Offset(FMath::FRand() * 1000, FMath::FRand() * 1000, 0);
-				if (FMath::FRand() < 0.5)
-				{
-					Offset.Yaw *= -1;
-				}
-				if (FMath::FRand() < 0.5)
-				{
-					Offset.Pitch *= -1;
-				}
+				FRotator Offset(FMath::FRandRange(-10, 10), FMath::FRandRange(-10, 10), 0);
 				TraceVector = Offset.RotateVector(TraceVector);
 
 				HitSomething = World->LineTraceSingle(OutHit, StartLocation, StartLocation + TraceVector, Params, ObjectParams);
