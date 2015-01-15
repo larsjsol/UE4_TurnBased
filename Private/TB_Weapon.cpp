@@ -83,6 +83,9 @@ void ATB_Weapon::SpawnImpactEffects_Implementation(const FHitResult &HitResult)
 
 			USoundCue *SoundCue = WeaponFX->ImpactSoundCue(Surface);
 			UGameplayStatics::PlaySoundAtLocation(this, SoundCue, HitResult.ImpactPoint);
+
+			UParticleSystem *ParticleSystem = WeaponFX->ImpactParticleSystem(Surface);
+			UGameplayStatics::SpawnEmitterAtLocation(this, ParticleSystem, HitResult.ImpactPoint, HitResult.ImpactNormal.Rotation());
 		}
 	}
 }
