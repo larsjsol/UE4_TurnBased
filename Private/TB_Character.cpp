@@ -192,6 +192,7 @@ void ATB_Character::InitiateAttack_Implementation()
 	{
 		float AttackTime = AnimInstance->PlayAnimation(AnimInstance->GetAttackAnim());
 		float WeaponAttackTime = Weapon->Attack();
+		ActionPoints--;
 		SetBusy(std::max(AttackTime, WeaponAttackTime));
 	}
 }
@@ -211,7 +212,6 @@ void ATB_Character::Attack_Implementation()
 		{
 			HitSomething = AimComponent->MissLineTrace(Impact);
 		}
-		ActionPoints--;
 
 		if (HitSomething)
 		{
