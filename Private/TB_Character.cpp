@@ -205,21 +205,17 @@ void ATB_Character::Attack_Implementation()
 		if (AimComponent->FinalHitChance > FGenericPlatformMath::Rand() % 100)
 		{
 			HitSomething = true;
-
 			AimComponent->HitLineTrace(Impact);
-			AimComponent->EnemyTarget->TakeDamage(AimComponent->FinalDamage, FDamageEvent(), TeamController, this);
 		}
 		else
 		{
-			if (AimComponent->MissLineTrace(Impact))
-			{
-				HitSomething = true;
-			}
+			HitSomething = AimComponent->MissLineTrace(Impact);
 		}
 		ActionPoints--;
 
 		if (HitSomething)
 		{
+			Impact.Actor->TakeDamage(AimComponent->FinalDamage, FDamageEvent(), TeamController, this);
 			Weapon->SpawnImpactEffects(Impact);
 		}
 	}
