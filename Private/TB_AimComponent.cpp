@@ -209,22 +209,28 @@ bool UTB_AimComponent::MissLineTrace(FHitResult &OutHit)
 			}
 			else
 			{
-				//get our direction and rotate it so we miss by Offest UUs
-				FVector Direction;
-				float Length;
-				(StartLocation - HitLocation).ToDirectionAndLength(Direction, Length);
-				float OffsetRad = atan2f(Offset, Length);
-				FRotator Rotator(0, OffsetRad * 180 / PI, 0);
-				if (FMath::FRand() < 0.5f)
+				//we need to adjust the trace so it misses the target
+
+				// Create a new vector for the trace 
+				FVector TraceVector = HitLocation - StartLocation;
+				TraceVector.Normalize();
+				TraceVector *= Weapon->MaxRange;
+				UE_LOG(TB_Log, Warning, TEXT("MissLineTrace(): TraceVector.Size() == %f"), TraceVector.Size());
+
+				// Rotate it by 0-5 deg in all directions
+				FRotator Offset(FMath::FRand() * 1000, FMath::FRand() * 1000, 0);
+				if (FMath::FRand() < 0.5)
 				{
-					Rotator *= -1;
+					Offset.Yaw *= -1;
 				}
-				FVector AdjustedDirection = Rotator.RotateVector(Direction);
-				//use the weapon range as length
-				AdjustedDirection *= Weapon->MaxRange;
-				//ensure that we dont hit the target
-				HitSomething = World->LineTraceSingle(OutHit, StartLocation, StartLocation + AdjustedDirection, Params, ObjectParams);
-				if (HitSomething && EnemyTarget->GetUniqueID() != OutHit.Actor->GetUniqueID())
+				if (FMath::FRand() < 0.5)
+				{
+					Offset.Pitch *= -1;
+				}
+				TraceVector = Offset.RotateVector(TraceVector);
+
+				HitSomething = World->LineTraceSingle(OutHit, StartLocation, StartLocation + TraceVector, Params, ObjectParams);
+				if (HitSomething && EnemyTarget->GetUniqueID() == OutHit.Actor->GetUniqueID())
 				{
 					//we're still hitting the target, pray that we'll miss it when we look at the other targetpoints
 					continue;
