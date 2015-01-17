@@ -61,7 +61,6 @@ void ATB_TeamController::CharacterPlayTurn()
 	int32 PrevId = CurrentCharacterId;
 	ActivateNextCharacterThatCanAct();
 
-
 	ATB_Character *Character = GetActiveCharacter();
 	if (Character && Character->ActionPoints && Character->HitPoints)
 	{

@@ -260,13 +260,13 @@ void ATB_Character::LookAt_Implementation(AActor *Target)
 
 void ATB_Character::TargetEnemy_Implementation()
 {
-	AimComponent->UpdateVisibleEnemies();
 	if (!AimComponent->EnemyTarget)
 	{
 		TargetNextEnemy();
 	}
 	else
 	{
+		LookAt(AimComponent->EnemyTarget);
 		AimComponent->UpdateValues();
 	}
 }
@@ -277,8 +277,8 @@ void ATB_Character::TargetNextEnemy_Implementation()
 	if (AimComponent->EnemyTarget)
 	{
 		LookAt(AimComponent->EnemyTarget);
+		AimComponent->UpdateValues();
 	}
-	AimComponent->UpdateValues();
 }
 
 void ATB_Character::GetHitLocations_Implementation(TArray<FVector> &WorldLocations)
@@ -302,6 +302,7 @@ void ATB_Character::PlayTurn_Implementation()
 
 	if (ActionPoints > 0)
 	{
+		AimComponent->UpdateVisibleEnemies();
 		if (!HumanControlled)
 		{
 			Controller->DoSingleAction();
