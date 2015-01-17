@@ -63,6 +63,7 @@ float ATB_Weapon::PlayAnimation(UAnimSequence *Animation) {
 
 float ATB_Weapon::Attack_Implementation()
 {
+	Ammo--;
 	return PlayAnimation(AnimSet.Attack);
 }
 
