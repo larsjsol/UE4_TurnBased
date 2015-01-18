@@ -4,6 +4,7 @@
 
 #include "GameFramework/Character.h"
 #include "TB_Weapon.h"
+#include "Components/SplineMeshComponent.h"
 
 #include "TB_Character.generated.h"
 
@@ -15,6 +16,7 @@ class ATB_TeamController;
 class UTB_AnimInstance;
 class UTB_Name;
 class UTB_AimComponent;
+class USplineComponent;
 
 UENUM(BlueprintType)
 enum class ETB_Gender : uint8
@@ -95,6 +97,12 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Game")
 	bool HumanControlled = false;
 
+	UPROPERTY(BlueprintReadOnly, Category = "UI")
+	USplineComponent *PathPreviewSpline = NULL;
+
+	UPROPERTY(BlueprintReadOnly, EditAnyWhere, Category = "UI")
+	UStaticMesh *PathPreviewMesh = NULL;
+
 	/* Called right before the turn starts */
 	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "Events")
 	void OnBeginTurn();
@@ -104,6 +112,9 @@ public:
 	/* Called when the team controller activates this character */
 	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "Events")
 	void OnActivation();
+	/* Called when this character is no longer activated */
+	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "Events")
+	void OnDeActivation();
 
 	//Is the character performing an action right now?
 	UFUNCTION(BluePrintNativeEvent, BlueprintPure, Category = "Game")
@@ -130,8 +141,24 @@ public:
 	void Attack();
 
 	/* Navigation */
+
+	/*
+	Check if the character can navigate to Destination for one AP
+	*/
 	UFUNCTION(BluePrintNativeEvent, BlueprintPure, Category = "Navigation")
-	bool CanMoveTo(FVector Destination);
+	UNavigationPath *GetPath(const FVector &Destination, bool &OutPathOk);
+
+	/*
+	Visulise Path a potential movement path
+	*/
+	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "UI")
+	void ShowPreviewPath(const UNavigationPath *Path);
+
+	/*
+	Reset internal data structures and hide path visualisation
+	*/
+	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "UI")
+	void HidePreviewPath();
 
 	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "Navigation")
 	void MoveTo(FVector Destination);
@@ -163,4 +190,7 @@ private:
 
 	UPROPERTY()
 	ATB_TeamController *TeamController = NULL;
+
+	void AddPreviewSplineMesh(float StartDistance, float EndDistance);
+	TArray<USplineMeshComponent *> PathPreviewSplineMeshes;
 };

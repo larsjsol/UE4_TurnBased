@@ -5,6 +5,13 @@
 #include "TB_Character.h"
 #include "TB_AimComponent.h"
 
+void ATB_AIController::OnMoveCompleted(FAIRequestID RequestID, EPathFollowingResult::Type Result)
+{
+	Super::OnMoveCompleted(RequestID, Result);
+
+	ATB_Character *Pawn = (ATB_Character *)GetCharacter();
+	Pawn->ClearBusy();
+}
 
 void ATB_AIController::DoSingleAction_Implementation()
 {

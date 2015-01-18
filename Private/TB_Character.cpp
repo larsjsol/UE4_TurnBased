@@ -11,9 +11,12 @@
 
 #include "AIController.h"
 #include "AI/Navigation/NavigationPath.h"
+#include "Components/SplineComponent.h"
+#include "Components/SplineMeshComponent.h"
+
 
 #include <algorithm>
-
+#include <math.h>
 
 ATB_Character::ATB_Character(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -27,7 +30,7 @@ ATB_Character::ATB_Character(const FObjectInitializer& ObjectInitializer)
 	/* Somewhat sane defaults */
 	OverheadSpringArm->RelativeLocation.Z = 140;
 	OverheadSpringArm->RelativeRotation.Yaw = 90;
-	OverheadSpringArm->RelativeRotation.Pitch = -30;
+	OverheadSpringArm->RelativeRotation.Pitch = -60;
 	OverheadSpringArm->TargetArmLength = 1000;
 	OverheadSpringArm->CameraLagSpeed = 10;
 	OverheadSpringArm->CameraRotationLagSpeed = 10;
@@ -44,6 +47,9 @@ ATB_Character::ATB_Character(const FObjectInitializer& ObjectInitializer)
 
 	AimComponent = ObjectInitializer.CreateAbstractDefaultSubobject<UTB_AimComponent>(this, TEXT("Aim Component"));
 	AimComponent->AttachParent = FPSpringArm;
+
+	PathPreviewSpline = ObjectInitializer.CreateAbstractDefaultSubobject<USplineComponent>(this, TEXT("Path Preview"));
+	PathPreviewSpline->AttachParent = Mesh;
 }
 
 void ATB_Character::BeginPlay()
@@ -146,6 +152,11 @@ void ATB_Character::OnActivation_Implementation()
 	;
 }
 
+void ATB_Character::OnDeActivation_Implementation()
+{
+	HidePreviewPath();
+}
+
 bool ATB_Character::IsBusy_Implementation()
 {
 	auto Vel = GetVelocity();
@@ -218,16 +229,95 @@ void ATB_Character::Attack_Implementation()
 	}
 }
 
-bool ATB_Character::CanMoveTo_Implementation(FVector Destination)
+UNavigationPath *ATB_Character::GetPath_Implementation(const FVector &Destination, bool &OutPathOk)
 {
 	auto *World = GetWorld();
 	auto *NavigationSystem = World->GetNavigationSystem();
-	auto *Path = NavigationSystem->FindPathToLocationSynchronously(World, GetActorLocation(), Destination);
+	auto *Path = NavigationSystem->FindPathToLocationSynchronously(World, GetActorLocation(), Destination, this);
 	auto Length = Path->GetPathLength();
 
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString("Path length: ") += FString::SanitizeFloat(Length / 100) += FString("m"));
+	/*
+	FVector PrevPoint = GetActorLocation();
+	for (FVector Point : Path->PathPoints)
+	{
 
-	return Length >= 0 && Length <= Movement;
+		UE_LOG(TB_Log, Log, TEXT("%f, %f, %f"), Point.X, Point.Y, Point.Z);
+	}
+	*/
+
+	OutPathOk = Length > 0 && Length <= Movement;
+	return Path;
+}
+
+void ATB_Character::ShowPreviewPath_Implementation(const UNavigationPath *Path)
+{
+	FCollisionObjectQueryParams ObjectParams;
+	FHitResult HitResult;
+	FCollisionQueryParams Params;
+	Params.AddIgnoredActor(this);
+	if (Weapon)
+	{
+		Params.AddIgnoredActor(Weapon);
+	}
+
+	HidePreviewPath();
+
+	//PathPreviewSpline->AddSplineWorldPoint(FVector(0, 0, 50));
+	for (FVector PathPoint : Path->PathPoints)
+	{
+		//Local coords
+		FVector SplinePoint = PathPoint - GetActorLocation();
+
+		GetWorld()->LineTraceSingle(HitResult, PathPoint + FVector(0, 0, 100), PathPoint - FVector(0, 0, 200), Params, ObjectParams);
+
+		SplinePoint.Z = HitResult.ImpactPoint.Z + 20;
+		PathPreviewSpline->AddSplineWorldPoint(SplinePoint);
+	}
+
+	FBoxSphereBounds Bounds = PathPreviewMesh->GetBounds();
+	float Length = FMath::Abs(Bounds.BoxExtent.Y);
+	float TotLength = PathPreviewSpline->GetSplineLength();
+	for (float Distance = Length; Distance < TotLength; Distance += FMath::Min(Length, TotLength - Distance))
+	{
+		AddPreviewSplineMesh(Distance - Length, Distance);
+	}
+	AddPreviewSplineMesh(TotLength - fmod(TotLength, Length), TotLength);
+}
+
+void ATB_Character::HidePreviewPath_Implementation()
+{
+	PathPreviewSpline->ClearSplinePoints();
+	for (USplineMeshComponent *SMesh : PathPreviewSplineMeshes)
+	{
+		SMesh->DestroyComponent();
+	}
+	PathPreviewSplineMeshes.Empty();
+}
+
+void ATB_Character::AddPreviewSplineMesh(float StartDistance, float EndDistance)
+{
+	if (!PathPreviewMesh)
+	{
+		UE_LOG(TB_Log, Error, TEXT("AddPreviewSplineMesh(): PathPreviewMesh not set"));
+		return;
+	}
+	static const float Scale = 25;
+	FVector StartPos = PathPreviewSpline->GetWorldLocationAtDistanceAlongSpline(StartDistance);
+	FVector StartTan = PathPreviewSpline->GetWorldDirectionAtDistanceAlongSpline(StartDistance) * Scale;
+	FVector EndPos = PathPreviewSpline->GetWorldLocationAtDistanceAlongSpline(EndDistance);
+	FVector EndTan = PathPreviewSpline->GetWorldDirectionAtDistanceAlongSpline(EndDistance) * Scale;
+
+	USplineMeshComponent *SplineMesh = ConstructObject<USplineMeshComponent>(USplineMeshComponent::StaticClass(), this);
+	SplineMesh->SetForwardAxis(ESplineMeshAxis::Y);
+	SplineMesh->SetMobility(EComponentMobility::Movable);
+	SplineMesh->SetRelativeRotation(FRotator(0, 90, 0)); //???
+	SplineMesh->RegisterComponentWithWorld(GetWorld());
+	//SplineMesh->SetWorldLocation(StartPos);
+	SplineMesh->SetStaticMesh(PathPreviewMesh);
+	SplineMesh->SetStartAndEnd(StartPos, StartTan, EndPos, EndTan);
+	SplineMesh->AttachTo(Mesh);
+
+	PathPreviewSplineMeshes.Add(SplineMesh);
 }
 
 void ATB_Character::MoveTo_Implementation(FVector Destination)
@@ -239,8 +329,9 @@ void ATB_Character::MoveTo_Implementation(FVector Destination)
 	ActionPoints--;
 
 	auto *aic = (AAIController*) Controller;
-	aic->MoveToLocation(Destination, 0.05, false);
-	SetBusy(Movement / CharacterMovement->MaxWalkSpeed);
+	aic->MoveToLocation(Destination, 0.01, false);
+
+	Busy = true; // Cleared from OnMoveCompleted in ATB_AIController
 }
 
 void ATB_Character::LookAt_Implementation(AActor *Target)

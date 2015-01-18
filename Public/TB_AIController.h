@@ -14,6 +14,8 @@ class UE4_TURNBASED_API ATB_AIController : public AAIController
 	GENERATED_BODY()
 
 public:
+	virtual void OnMoveCompleted(FAIRequestID RequestID, EPathFollowingResult::Type Result) override;
+
 	UFUNCTION(BluePrintNativeEvent, BlueprintCallable, Category = "Ai")
 	void DoSingleAction();
 };

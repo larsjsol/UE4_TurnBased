@@ -108,6 +108,8 @@ void ATB_TeamController::NextCharacter_Implementation()
 
 void ATB_TeamController::ActivateNextLivingCharacter_Implementation()
 {
+	Characters[CurrentCharacterId]->OnDeActivation();
+
 	auto previd = CurrentCharacterId;
 	NextCharacter();
 	while (CurrentCharacterId != previd)
@@ -123,6 +125,8 @@ void ATB_TeamController::ActivateNextLivingCharacter_Implementation()
 
 void ATB_TeamController::ActivateNextCharacterThatCanAct_Implementation()
 {
+	Characters[CurrentCharacterId]->OnDeActivation();
+
 	auto previd = CurrentCharacterId;
 	NextCharacter();
 	while (CurrentCharacterId != previd)
