@@ -1,5 +1,7 @@
 # UE4_TurnBased
 
+Warning. Dead code ahead. [NavGrid](https://github.com/larsjsol/NavGrid) is a active project that does navigation on a grid for turn based games. 
+
 Things (mostly base clases for blueprints) that might come in handy for making a turn-based game in Unreal Engine 4
 
 ## Install
